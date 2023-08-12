@@ -3,4 +3,4 @@ from django.shortcuts import render
 
 # Create your views here.
 def index(request):
-    return render(request, "StockMarketApp/index.html", {})
+    return render(request, "StockMarketApp/candlestick_chart.html", {})

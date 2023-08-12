@@ -1,0 +1,53 @@
+{% extends 'StockMarketApp/index.html' %}
+
+<!-- Title -->
+{% block title %}
+    Stock
+{% endblock title %}
+
+{% block content%}
+
+<div class="container">
+    <div class="row mt-5 pt-3">
+        <form class="form-inline">
+            <div class="col-lg-9 px-3" >
+                <input aria-label="Search" class="form-control w-100" placeholder="Search" type="search">
+            </div>
+            <div class="col-lg-2">
+                <button class="btn btn-outline-success" style="width: 85%" type="submit">Search</button>
+            </div>
+        </form>
+    </div>
+
+    <div class="row pt-4">
+        <div class="col-lg-2 px-5">
+            <button type="button" class="btn btn-outline-success" data-toggle="button" aria-pressed="false" autocomplete="off">
+                AAPL - Apple Inc.
+            </button>
+        </div>
+        <div class="col-lg-2 px-5">
+            <button type="button" class="btn btn-outline-success" data-toggle="button" aria-pressed="false" autocomplete="off">
+                AAPL - Apple Inc.
+            </button>
+        </div>
+        <div class="col-lg-2 px-5">
+            <button type="button" class="btn btn-outline-success" data-toggle="button" aria-pressed="false" autocomplete="off">
+                AAPL - Apple Inc.
+            </button>
+        </div>
+        <div class="col-lg-2 px-5">
+            <button type="button" class="btn btn-outline-success" data-toggle="button" aria-pressed="false" autocomplete="off">
+                AAPL - Apple Inc.
+            </button>
+        </div>
+        <div class="col-lg-2 px-5">
+            <button type="button" class="btn btn-outline-success" data-toggle="button" aria-pressed="false" autocomplete="off">
+                AAPL - Apple Inc.
+            </button>
+        </div>
+    </div>
+
+</div>
+
+
+{% endblock content %}
