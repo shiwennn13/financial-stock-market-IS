@@ -11,8 +11,16 @@
     <div class="row mt-5 pt-3">
         <form class=" form form-inline" method="POST" >
             {% csrf_token %}
-            <div class="col-lg-9 px-3" >
-                <input aria-label="Search" class="form-control w-100" placeholder="Search" type="search" name="stock_search">
+            <div class="col-lg-7 px-3" >
+                <input aria-label="Pick a stock" class="form-control w-100" placeholder="Search" type="search" name="stock_search" required>
+            </div>
+            <div class="col-lg-2 pr-3">
+                <select class="form-select" aria-label="Time frame" name="time_frame">
+                    <option selected>Time frame</option>
+                    <option value="1">1 day</option>
+                    <option value="7">1 week</option>
+                    <option value="30">1 month</option>
+                </select>
             </div>
             <div class="col-lg-2">
                 <button type="submit" class="btn btn-outline-success" style="width: 85%" >Search</button>
