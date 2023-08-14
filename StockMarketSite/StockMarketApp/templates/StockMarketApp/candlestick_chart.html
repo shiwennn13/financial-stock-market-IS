@@ -9,12 +9,13 @@
 
 <div class="container">
     <div class="row mt-5 pt-3">
-        <form class="form-inline">
+        <form class=" form form-inline" method="POST" >
+            {% csrf_token %}
             <div class="col-lg-9 px-3" >
-                <input aria-label="Search" class="form-control w-100" placeholder="Search" type="search">
+                <input aria-label="Search" class="form-control w-100" placeholder="Search" type="search" name="stock_search">
             </div>
             <div class="col-lg-2">
-                <button class="btn btn-outline-success" style="width: 85%" type="submit">Search</button>
+                <button type="submit" class="btn btn-outline-success" style="width: 85%" >Search</button>
             </div>
         </form>
     </div>
@@ -27,23 +28,26 @@
         </div>
         <div class="col-lg-2 px-5">
             <button type="button" class="btn btn-outline-success" data-toggle="button" aria-pressed="false" autocomplete="off">
-                AAPL - Apple Inc.
+                TSLA - Tesla Inc.
             </button>
         </div>
         <div class="col-lg-2 px-5">
             <button type="button" class="btn btn-outline-success" data-toggle="button" aria-pressed="false" autocomplete="off">
-                AAPL - Apple Inc.
+                SBUX - Strbcks.
             </button>
         </div>
         <div class="col-lg-2 px-5">
             <button type="button" class="btn btn-outline-success" data-toggle="button" aria-pressed="false" autocomplete="off">
-                AAPL - Apple Inc.
+                META - Meta Inc.
             </button>
         </div>
         <div class="col-lg-2 px-5">
             <button type="button" class="btn btn-outline-success" data-toggle="button" aria-pressed="false" autocomplete="off">
-                AAPL - Apple Inc.
+                NKE - Nike Inc.
             </button>
+                <h1>
+                    {{ stock_name }}
+                </h1>
         </div>
     </div>
 
