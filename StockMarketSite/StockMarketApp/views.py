@@ -11,31 +11,36 @@ def home(request):
         stock_name = request.POST.get('stock_search')
         time_frame = request.POST.get('time_frame')
 
-        if not stock_name or time_frame:
+        if not stock_name or not time_frame:
             print('Empty')
         else:
-            url = ''
-            if time_frame == 1:
-                url = 'https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol='+ stock_name +'&apikey=C8W51TVO4E4FZ3HZ'
-            elif time_frame == 7:
-                url = 'https://www.alphavantage.co/query?function=TIME_SERIES_WEEKLY&symbol='+ stock_name +'&apikey=C8W51TVO4E4FZ3HZ'
-            elif time_frame == 30:
-                url = 'https://www.alphavantage.co/query?function=TIME_SERIES_MONTHLY&symbol='+ stock_name +'&apikey=C8W51TVO4E4FZ3HZ'
-            else:
-                print('error')
-
-            if not url:
-                response = requests.get(url)
-                data = response.json()
-
-                if data['Error Message']:
-                    print('Invalid Stock Symbol')
-                else:
-                    print(data)
+            print(time_frame)
+            call_api(time_frame, stock_name)
 
         return redirect("/home")
     else:
         return render(request, "StockMarketApp/candlestick_chart.html", {})
 
-def search(request):
+def suggest(request, symbol, time):
+    call_api(time, symbol)
     return render(request, "StockMarketApp/candlestick_chart.html", {})
+
+def call_api(time,stock):
+    url = ''
+    if time == '1':
+        url = 'https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol=' + stock + '&apikey=C8W51TVO4E4FZ3HZ'
+    elif time == '7':
+        url = 'https://www.alphavantage.co/query?function=TIME_SERIES_WEEKLY&symbol=' + stock + '&apikey=C8W51TVO4E4FZ3HZ'
+    elif time == '30':
+        url = 'https://www.alphavantage.co/query?function=TIME_SERIES_MONTHLY&symbol=' + stock + '&apikey=C8W51TVO4E4FZ3HZ'
+    else:
+        print('error')
+
+    if url:
+        response = requests.get(url)
+        data = response.json()
+
+        if 'Error Message' in data:
+            print('Invalid Stock Symbol')
+        else:
+            print(data)
