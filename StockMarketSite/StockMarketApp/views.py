@@ -15,29 +15,28 @@ def home(request):
 
         if not stock_name or not time_frame:
             print('Empty')
+            return redirect("/home")
         else:
-            print(time_frame)
-            call_api(time_frame, stock_name)
-            chart()
-
-        return redirect("/home")
+            plot_div = call_api(time_frame, stock_name)
+            return render(request, "StockMarketApp/candlestick_chart.html", {'plot_div': plot_div})
     else:
         return render(request, "StockMarketApp/candlestick_chart.html", {})
 
 def suggest(request, symbol, time):
-    call_api(time, symbol)
-    fig = chart()
-    config = {'displayModeBar': False}
-    div = fig.to_html(full_html=False, config=config)
-    return render(request, "StockMarketApp/candlestick_chart.html", {'plot_div': div})
+    plot_div = call_api(time, symbol)
+    return render(request, "StockMarketApp/candlestick_chart.html", {'plot_div': plot_div})
 
 def call_api(time,stock):
     url = ''
+    day = ''
     if time == '1':
+        day = 'Time Series (Daily)'
         url = 'https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol=' + stock + '&apikey=C8W51TVO4E4FZ3HZ'
     elif time == '7':
+        day = 'Weekly Time Series'
         url = 'https://www.alphavantage.co/query?function=TIME_SERIES_WEEKLY&symbol=' + stock + '&apikey=C8W51TVO4E4FZ3HZ'
     elif time == '30':
+        day = 'Monthly Time Series'
         url = 'https://www.alphavantage.co/query?function=TIME_SERIES_MONTHLY&symbol=' + stock + '&apikey=C8W51TVO4E4FZ3HZ'
     else:
         print('error')
@@ -49,23 +48,58 @@ def call_api(time,stock):
         if 'Error Message' in data:
             print('Invalid Stock Symbol')
         else:
-            print(data)
+            dates = []
+            open = []
+            high = []
+            low = []
+            close = []
 
-def chart():
-    open_data = [33.0, 33.3, 33.5, 33.0, 34.1]
-    high_data = [33.1, 33.3, 33.6, 33.2, 34.8]
-    low_data = [32.7, 32.7, 32.8, 32.6, 32.8]
-    close_data = [33.0, 32.9, 33.3, 33.1, 33.1]
-    dates = [datetime(year=2013, month=10, day=10),
-             datetime(year=2013, month=11, day=10),
-             datetime(year=2013, month=12, day=10),
-             datetime(year=2014, month=1, day=10),
-             datetime(year=2014, month=2, day=10)]
+            for date_str, data in data[day].items():
+                date_parts = date_str.split("-")
+
+                year = int(date_parts[0])
+                month = int(date_parts[1])
+                day = int(date_parts[2])
+
+                date = datetime(year, month, day)
+
+                open_price = float(data["1. open"])
+                high_price = float(data["2. high"])
+                low_price = float(data["3. low"])
+                close_price = float(data["4. close"])
+
+                dates.append(date)
+                open.append(open_price)
+                high.append(high_price)
+                low.append(low_price)
+                close.append(close_price)
+
+            return chart(open, high, low, close, dates)
+
+
+def chart(open, high, low, close, date):
+#def chart():
+    open_data = open
+    high_data = high
+    low_data = low
+    close_data = close
+    dates = date
+
+    # Calculate the highest and lowest values in high_data and low_data
+    y_max = max(max(high_data), max(low_data))
+    y_min = min(min(high_data), min(low_data))
 
     fig = go.Figure(data=[go.Candlestick(x=dates,
                                          open=open_data, high=high_data,
                                          low=low_data, close=close_data)])
 
-    fig.update_layout(xaxis_rangeslider_visible=False)
+    # Set the y-axis range to fit the data
+    fig.update_yaxes(range=[y_min - 1, y_max + 1])  # Add some padding for clarity
 
-    return fig
+    fig.update_layout(xaxis_rangeslider_visible=False, height=700, yaxis_autorange=True)
+
+    config = {'displayModeBar': False}
+
+    div = fig.to_html(full_html=False, config=config)
+
+    return div
