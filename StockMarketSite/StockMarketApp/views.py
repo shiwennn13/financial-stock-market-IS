@@ -33,11 +33,11 @@ def call_api(time,stock):
         day = 'Time Series (Daily)'
         url = 'https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol=' + stock + '&apikey=C8W51TVO4E4FZ3HZ'
     elif time == '7':
-        day = 'Weekly Time Series'
-        url = 'https://www.alphavantage.co/query?function=TIME_SERIES_WEEKLY&symbol=' + stock + '&apikey=C8W51TVO4E4FZ3HZ'
+        day = 'Weekly Adjusted Time Series'
+        url = 'https://www.alphavantage.co/query?function=TIME_SERIES_WEEKLY_ADJUSTED&symbol=' + stock + '&apikey=C8W51TVO4E4FZ3HZ'
     elif time == '30':
-        day = 'Monthly Time Series'
-        url = 'https://www.alphavantage.co/query?function=TIME_SERIES_MONTHLY&symbol=' + stock + '&apikey=C8W51TVO4E4FZ3HZ'
+        day = 'Monthly Adjusted Time Series'
+        url = 'https://www.alphavantage.co/query?function=TIME_SERIES_MONTHLY_ADJUSTED&symbol=' + stock + '&apikey=C8W51TVO4E4FZ3HZ'
     else:
         print('error')
 
@@ -63,10 +63,27 @@ def call_api(time,stock):
 
                 date = datetime(year, month, day)
 
-                open_price = float(data["1. open"])
-                high_price = float(data["2. high"])
-                low_price = float(data["3. low"])
-                close_price = float(data["4. close"])
+                ratio = float(data["5. adjusted close"]) / float(data["4. close"])
+                ratio_adjusted = float(data["1. open"]) / float(data["4. close"])
+
+                if (ratio * 100) < 80:
+                    open_price = ratio * float(data["1. open"])
+                    high_price = ratio * float(data["2. high"])
+                    low_price = ratio * float(data["3. low"])
+
+                else:
+                    if (ratio_adjusted * 100) > 150:
+                        open_price = float(data["5. adjusted close"])
+                        high_price = float(data["5. adjusted close"])
+                        low_price = float(data["3. low"])
+                    else:
+                        open_price = float(data["1. open"])
+                        high_price = float(data["2. high"])
+                        low_price = float(data["3. low"])
+
+                #high_price = float(data["2. high"])
+                #low_price = float(data["3. low"])
+                close_price = float(data["5. adjusted close"])
 
                 dates.append(date)
                 open.append(open_price)
