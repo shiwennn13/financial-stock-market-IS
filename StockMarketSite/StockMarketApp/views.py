@@ -67,15 +67,20 @@ def call_api(time,stock):
                 ratio_adjusted = float(data["1. open"]) / float(data["4. close"])
 
                 if (ratio * 100) < 80:
-                    open_price = ratio * float(data["1. open"])
-                    high_price = ratio * float(data["2. high"])
-                    low_price = ratio * float(data["3. low"])
+                    if ratio_adjusted * 100 > 150:
+                        open_price = float(data["5. adjusted close"])
+                        high_price = float(data["5. adjusted close"])
+                        low_price = float(data["5. adjusted close"])
+                    else:
+                        open_price = ratio * float(data["1. open"])
+                        high_price = ratio * float(data["2. high"])
+                        low_price = ratio * float(data["3. low"])
 
                 else:
                     if (ratio_adjusted * 100) > 150:
                         open_price = float(data["5. adjusted close"])
                         high_price = float(data["5. adjusted close"])
-                        low_price = float(data["3. low"])
+                        low_price = float(data["5. adjusted close"])
                     else:
                         open_price = float(data["1. open"])
                         high_price = float(data["2. high"])
