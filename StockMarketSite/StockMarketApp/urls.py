@@ -23,5 +23,5 @@ urlpatterns = [
     path('index', views.index, name='index'),
     path('home', views.home, name='home'),
     path('', views.home, name='home'),
-    path('home/<str:symbol>/<str:time>', views.suggest, name='suggest')
+    #path('home/<str:symbol>/<str:time>', views.suggest, name='suggest')
 ]

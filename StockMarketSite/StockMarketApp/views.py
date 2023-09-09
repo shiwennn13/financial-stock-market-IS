@@ -1,8 +1,16 @@
+import numpy
 from django.shortcuts import render, redirect
 from django.http import HttpResponseRedirect
 import requests
 import plotly.graph_objects as go
 from datetime import datetime
+
+from numpy import array
+from sklearn.preprocessing import MinMaxScaler
+from tensorflow.keras.models import Sequential
+from tensorflow.keras.layers import Dense
+from tensorflow.keras.layers import LSTM
+import matplotlib.pyplot as plt
 
 # Create your views here.
 def index(request):
@@ -10,21 +18,47 @@ def index(request):
 
 def home(request):
     if request.method == 'POST':
-        stock_name = request.POST.get('stock_search')
-        time_frame = request.POST.get('time_frame')
+        if 'search' in request.POST:
+            stock_name = request.POST.get('stock_search')
+            time_frame = request.POST.get('time_frame')
 
-        if not stock_name or not time_frame:
-            print('Empty')
-            return redirect("/home")
+            if not stock_name or not time_frame:
+                print('Empty')
+                return redirect("/home")
+            else:
+                plot_div = call_api(time_frame, stock_name)
+                return render(request, "StockMarketApp/candlestick_chart.html", {'plot_div': plot_div})
         else:
-            plot_div = call_api(time_frame, stock_name)
-            return render(request, "StockMarketApp/candlestick_chart.html", {'plot_div': plot_div})
+            if 'AAPL' in request.POST:
+                symbol = "AAPL"
+                time = '1'
+                plot_div = call_api(time, symbol)
+                return render(request, "StockMarketApp/candlestick_chart.html", {'plot_div': plot_div})
+            elif 'TSLA' in request.POST:
+                symbol = "TSLA"
+                time = '1'
+                plot_div = call_api(time, symbol)
+                return render(request, "StockMarketApp/candlestick_chart.html", {'plot_div': plot_div})
+            elif 'SBUX' in request.POST:
+                symbol = "SBUX"
+                time = '1'
+                plot_div = call_api(time, symbol)
+                return render(request, "StockMarketApp/candlestick_chart.html", {'plot_div': plot_div})
+            elif 'META' in request.POST:
+                symbol = "META"
+                time = "1"
+                plot_div = call_api(time, symbol)
+                return render(request, "StockMarketApp/candlestick_chart.html", {'plot_div': plot_div})
+            elif 'NKE' in request.POST:
+                symbol = "NKE"
+                time = "1"
+                plot_div = call_api(time, symbol)
+                return render(request, "StockMarketApp/candlestick_chart.html", {'plot_div': plot_div})
     else:
         return render(request, "StockMarketApp/candlestick_chart.html", {})
 
-def suggest(request, symbol, time):
-    plot_div = call_api(time, symbol)
-    return render(request, "StockMarketApp/candlestick_chart.html", {'plot_div': plot_div})
+def suggest(symbol, time):
+    return call_api(time, symbol)
 
 def call_api(time,stock):
     url = ''
@@ -63,38 +97,52 @@ def call_api(time,stock):
 
                 date = datetime(year, month, day)
 
-                ratio = float(data["5. adjusted close"]) / float(data["4. close"])
-                ratio_adjusted = float(data["1. open"]) / float(data["4. close"])
+                if time != '1':
+                    ratio = float(data["5. adjusted close"]) / float(data["4. close"])
+                    ratio_adjusted = float(data["1. open"]) / float(data["4. close"])
 
-                if (ratio * 100) < 80:
-                    if ratio_adjusted * 100 > 150:
-                        open_price = float(data["5. adjusted close"])
-                        high_price = float(data["5. adjusted close"])
-                        low_price = float(data["5. adjusted close"])
+                    if (ratio * 100) < 80:
+                        if ratio_adjusted * 100 > 150:
+                            open_price = float(data["5. adjusted close"])
+                            high_price = float(data["5. adjusted close"])
+                            low_price = float(data["5. adjusted close"])
+                        else:
+                            open_price = ratio * float(data["1. open"])
+                            high_price = ratio * float(data["2. high"])
+                            low_price = ratio * float(data["3. low"])
+
                     else:
-                        open_price = ratio * float(data["1. open"])
-                        high_price = ratio * float(data["2. high"])
-                        low_price = ratio * float(data["3. low"])
+                        if (ratio_adjusted * 100) > 150:
+                            open_price = float(data["5. adjusted close"])
+                            high_price = float(data["5. adjusted close"])
+                            low_price = float(data["5. adjusted close"])
+                        else:
+                            open_price = float(data["1. open"])
+                            high_price = float(data["2. high"])
+                            low_price = float(data["3. low"])
 
+                    #high_price = float(data["2. high"])
+                    #low_price = float(data["3. low"])
+                    close_price = float(data["5. adjusted close"])
+
+                    dates.append(date)
+                    open.append(open_price)
+                    high.append(high_price)
+                    low.append(low_price)
+                    close.append(close_price)
                 else:
-                    if (ratio_adjusted * 100) > 150:
-                        open_price = float(data["5. adjusted close"])
-                        high_price = float(data["5. adjusted close"])
-                        low_price = float(data["5. adjusted close"])
-                    else:
-                        open_price = float(data["1. open"])
-                        high_price = float(data["2. high"])
-                        low_price = float(data["3. low"])
+                    open_price = float(data["1. open"])
+                    high_price = float(data["2. high"])
+                    low_price = float(data["3. low"])
+                    close_price = float(data["4. close"])
 
-                #high_price = float(data["2. high"])
-                #low_price = float(data["3. low"])
-                close_price = float(data["5. adjusted close"])
+                    dates.append(date)
+                    open.append(open_price)
+                    high.append(high_price)
+                    low.append(low_price)
+                    close.append(close_price)
 
-                dates.append(date)
-                open.append(open_price)
-                high.append(high_price)
-                low.append(low_price)
-                close.append(close_price)
+            lstm(close)
 
             return chart(open, high, low, close, dates)
 
@@ -125,3 +173,9 @@ def chart(open, high, low, close, date):
     div = fig.to_html(full_html=False, config=config)
 
     return div
+
+def lstm(close):
+    scaler = MinMaxScaler(feature_range=(0, 1))
+    close = scaler.fit_transform(numpy.array(close).reshape(-1, 1))
+    print(close)
+

@@ -8,9 +8,9 @@
 {% block content%}
 
 <div class="container">
-    <div class="row mt-5 pt-3">
-        <form class=" form form-inline" method="POST" >
-            {% csrf_token %}
+    <form  method="POST" >
+        {% csrf_token %}
+        <div class="row mt-5 pt-3">
             <div class="col-lg-7 px-3" >
                 <input aria-label="Pick a stock" class="form-control w-100" placeholder="Search" type="search" name="stock_search" required>
             </div>
@@ -23,38 +23,56 @@
                 </select>
             </div>
             <div class="col-lg-2">
-                <button type="submit" class="btn btn-outline-success" style="width: 85%" >Search</button>
+                <button type="submit" name="search" class="btn btn-outline-success" style="width: 85%" >Search</button>
             </div>
-        </form>
-    </div>
+        </div>
+    </form>
 
-    <div class="row pt-4">
-        <div class="col-lg-2 px-5">
-            <a href="/home/AAPL/1" class="btn btn-outline-success" role="button" aria-pressed="false">
-                AAPL - Apple Inc.
-            </a>
+    <form method="POST">
+        {% csrf_token %}
+        <div class="row pt-4">
+            <div class="col-lg-2 px-5">
+<!--                <a href="/home/AAPL/1" class="btn btn-outline-success" role="button" aria-pressed="false">-->
+<!--                    AAPL - Apple Inc.-->
+<!--                </a>-->
+                <button type="submit" name="AAPL" class="btn btn-outline-success" role="button" aria-pressed="false">
+                    AAPL - Apple Inc.
+                </button>
+            </div>
+            <div class="col-lg-2 px-5">
+<!--                <a href="/home/TSLA/1" class="btn btn-outline-success" role="button" aria-pressed="false">-->
+<!--                    TSLA - Tesla Inc.-->
+<!--                </a>-->
+                <button type="submit" name="TSLA" class="btn btn-outline-success" role="button" aria-pressed="false">
+                    TSLA - Tesla Inc.
+                </button>
+            </div>
+            <div class="col-lg-2 px-5">
+<!--                <a href="/home/SBUX/1" class="btn btn-outline-success" role="button" aria-pressed="false">-->
+<!--                    SBUX - Strbcks.-->
+<!--                </a>-->
+                <button type="submit" name="SBUX" class="btn btn-outline-success" role="button" aria-pressed="false">
+                    SBUX - Strbcks.
+                </button>
+            </div>
+            <div class="col-lg-2 px-5">
+<!--                <a href="/home/META/1" class="btn btn-outline-success" role="button" aria-pressed="false">-->
+<!--                    META - Meta Inc.-->
+<!--                </a>-->
+                <button type="submit" name="META" class="btn btn-outline-success" role="button" aria-pressed="false">
+                    META - Meta Inc.
+                </button>
+            </div>
+            <div class="col-lg-2 px-5">
+<!--                <a href="/home/NKE/1" class="btn btn-outline-success" role="button" aria-pressed="false">-->
+<!--                    NKE - Nike Inc.-->
+<!--                </a>-->
+                <button type="submit" name="NKE" class="btn btn-outline-success" role="button" aria-pressed="false">
+                    NKE - Nike Inx.
+                </button>
+            </div>
         </div>
-        <div class="col-lg-2 px-5">
-            <a href="/home/TSLA/1" class="btn btn-outline-success" role="button" aria-pressed="false">
-                TSLA - Tesla Inc.
-            </a>
-        </div>
-        <div class="col-lg-2 px-5">
-            <a href="/home/SBUX/1" class="btn btn-outline-success" role="button" aria-pressed="false">
-                SBUX - Strbcks.
-            </a>
-        </div>
-        <div class="col-lg-2 px-5">
-            <a href="/home/META/1" class="btn btn-outline-success" role="button" aria-pressed="false">
-                META - Meta Inc.
-            </a>
-        </div>
-        <div class="col-lg-2 px-5">
-            <a href="/home/NKE/1" class="btn btn-outline-success" role="button" aria-pressed="false">
-                NKE - Nike Inc.
-            </a>
-        </div>
-    </div>
+    </form>
 </div>
 
 <div class="row">
