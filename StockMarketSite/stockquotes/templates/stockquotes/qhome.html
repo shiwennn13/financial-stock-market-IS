@@ -1,0 +1,44 @@
+{% extends 'StockMarketApp/index.html' %}
+
+
+{% block content %}
+<div class="row mt-5 pt-3">
+    <div class="container">
+        <form action="{% url 'stockquotes:qhome'%}" class="d-flex justify-content-center" role="search" method="POST">
+            {% csrf_token %}
+            <div class="col-lg-7 px-3" >
+                <input class="form-control me-2" type="search" placeholder="Get Stock Quote" aria-label="Search" name="ticker">
+            </div>
+            <button class="btn btn-outline-success" type="submit">Search</button>
+        </form>
+    </div>
+</div>
+
+<br/>
+<br/>
+<div class="container">
+
+    {% if ticker %}
+        {{ ticker }}
+    {% endif %}
+
+    {% if api %}
+        {% if api == "Error..." %}
+            There was a problem with your ticker symbol, please try again...
+        {% else %}
+            <h1>{{ api.01_symbol }}</h1><br/>
+            Symbol: {{ api.01_symbol }}<br/>
+            Opening Price: {{ api.02_open }}<br/>
+            Intraday High Price: {{ api.03_high }}<br/>
+            Intraday Low Price: {{ api.04_low }}<br/>
+            Closing Price: {{ api.05_price }}<br/>
+            Trading Volume: {{ api.06_volume }}<br/>
+            Latest Trading Day: {{ api.07_latest_trading_day }}<br/>
+            Previous Closing Price: {{ api.08_previous_close }}<br/>
+            Price Change: {{ api.09_change }}<br/>
+            Price Change Percentage: {{ api.10_change_percent }}<br/>
+        {% endif %}
+    {% endif %}
+</div>
+
+{% endblock content %}

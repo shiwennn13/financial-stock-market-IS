@@ -31,6 +31,13 @@
                         <li class="nav-item">
                             <a class="nav-link" href="#">News</a>
                         </li>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'stockquotes:qhome' %}">QUOTES</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'stockquotes:add_stock' %}">WATCHLIST</a>
+                        </li>
                     </ul>
                   <!--Comment
                     <form class="form-inline my-2 my-lg-0">
@@ -41,7 +48,25 @@
                 </div>
             </nav>
 
-            {% block content %} {% endblock content %}
+            <div class="container">
+                <br/>
+
+                {% if messages %}
+                    {% for message in messages %}
+                        <div class="alert alert-warning alert-dismissable" role="alert">
+                            <button class="close" data-dismiss="alert">
+                                <small><sup>x</sup></small>
+                            </button>
+                            {{ message }}
+                        </div><br/>
+                    {% endfor %}
+                {% endif %}
+
+                {% block content %}
+
+                {% endblock content %}
+            </div>
+
 
         <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" ></script>
         <script src="https://cdn.jsdelivr.net/npm/popper.js@1.12.9/dist/umd/popper.min.js" ></script>

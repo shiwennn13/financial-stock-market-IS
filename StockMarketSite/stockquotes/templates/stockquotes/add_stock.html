@@ -1,0 +1,65 @@
+{% extends 'StockMarketApp/index.html' %}
+
+{% block content %}
+
+<h1>Stock Watchlist</h1>
+<br/>
+
+
+<div class="container">
+    <form action="{% url 'stockquotes:add_stock'%}" class="d-flex justify-content-center" role="search" method="POST">
+        {% csrf_token %}
+        <div class="col-lg-7 px-3">
+            <input class="form-control me-2" type="search" placeholder="Add Stock to Watchlist" aria-label="Search"
+                   name="ticker">
+        </div>
+        <button class="btn btn-outline-success" type="submit">ADD TICKER</button>
+    </form>
+</div>
+<br/><br/>
+
+<table class="table table-hover" >
+    <caption>Stock Watchlist</caption>
+    <thead class="table-dark">
+    <tr>
+        <th scope="col">Symbol</th>
+        <th scope="col">Company</th>
+        <th scope="col">Last Price</th>
+        <th scope="col">Change</th>
+        <th scope="col">%Change</th>
+        <th scope="col">Currency</th>
+        <th scope="col">Volume</th>
+        <th scope="col">Mkt Cap</th>
+        <th scope="col">Remove Stock</th>
+
+    </tr>
+    </thead>
+    <tbody >
+    {% if ticker %}
+
+        {% for list_item in output%}
+            <tr>
+                <th scope="row"> {{ list_item.01_symbol }} </th>
+                <td>{{ list_item.02_open }}</td>
+                <td>{{ list_item.05_price }}</td>
+                <td>{{ list_item.09_change }}</td>
+                <td>{{ list_item.10_change_percent }}</td>
+                <td>{{ list_item.07_latest_trading_day }}</td>
+                <td>{{ list_item.06_volume }}</td>
+                <td>{{ list_item.08_previous_close }}</td>
+                <td>Delete</a></td>
+            </tr>
+        {% endfor %}
+
+
+    {% endif %}
+
+    </tbody>
+</table>
+
+<br/><br/>
+{% for item in ticker %}
+	<a href="{% url 'stockquotes:delete' item.id %}" class="btn btn-outline-danger btn-small">Delete {{ item }}</a>
+{% endfor %}
+
+{% endblock content %}
