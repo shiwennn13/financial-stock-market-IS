@@ -74,7 +74,7 @@
         </div>
     </form>
 </div>
-
+{% if plot_div %}
 <div class="row">
     <div class="col-lg-1"></div>
     <div class="col-lg-10">
@@ -82,6 +82,20 @@
     </div>
     <div class="col-lg-1"></div>
 </div>
+{% endif %}
 
+{% if messages %}
+<div class="row pt-5">
+    <div class="col-lg-2"></div>
+    <div class="col-lg-8">
+        <div class="alert alert-danger" role="alert">
+            {% for message in messages %}
+                {{ message }}
+            {% endfor %}
+        </div>
+    </div>
+    <div class="col-lg-2"></div>
+</div>
+{% endif %}
 
 {% endblock content %}
