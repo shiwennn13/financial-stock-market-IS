@@ -4,6 +4,7 @@ from .forms import StockForm
 from django.contrib import messages
 
 
+
 def qhome ( request ) :
     import requests
     import json
