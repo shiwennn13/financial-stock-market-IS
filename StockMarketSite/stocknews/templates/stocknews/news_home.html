@@ -7,23 +7,45 @@
 </div>
 
 <div class="container" id="articles-container">
-        {% for value in data %}
-        <div class="card mb-3 box" style="max-width: 640px; margin:auto;">
-            <div class="row">
-                <div class="col-md-8">
-                    <div class="card-body">
-                        <h5 class="card-title"><a href="{{value.url}}" target="_blanck">{{value.title}}</a></h5>
-                        <p class="card-text">{{value.description}}</p>
-                        <p class="card-text"><small class="text-muted">{{value.publishedat}}</small></p>
-                    </div>
-                </div>
-
-                <div class="col-md-4 img-box">
-                    <img src="{{value.image}}" class="card-img" alt="..." height="100%">
+    {% for value in data %}
+    <div class="card mb-3 box" style="max-width: 640px; margin:auto;">
+        <div class="row">
+            <div class="col-md-8">
+                <div class="card-body">
+                    <h5 class="card-title"><a href="{{value.url}}" target="_blanck">{{value.title}}</a></h5>
+                    <p class="card-text">{{value.description}}</p>
+                    <p class="card-text"><small class="text-muted">{{value.publishedat}}</small></p>
                 </div>
             </div>
+            <div class="col-md-4 img-box">
+                <img src="{{value.image}}" class="card-img" alt="..." height="100%">
+            </div>
         </div>
-        {% endfor %}
     </div>
-    <h1 id="loading">Loading....</h1>
+    {% endfor %}
+</div>
+
+<style>
+.box{
+    transition-property: box-shadow, transform;
+    transition-duration: 1s;
+}
+.box:hover{
+    /* box-shadow: 2px 2px 5px #8080807a; */
+    box-shadow: 1px 2px 8px 0px #00bcffb0;
+    transform: translateY(-9px);
+}
+.img-box{
+    padding: 20px;
+}
+.img-box img{
+    border-radius: 15px;
+    object-fit: cover;
+}
+#loading{
+    text-align: center;
+    display: none;
+}
+</style>
+
 {% endblock content %}

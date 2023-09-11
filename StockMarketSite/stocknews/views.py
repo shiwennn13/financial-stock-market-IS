@@ -10,12 +10,14 @@ temp_img = "https://images.pexels.com/photos/3225524/pexels-photo-3225524.jpeg?a
 def news_home ( request ) :
     page = request.GET.get('page', 1)
     category = request.GET.get('category', None)
+    search = request.GET.get('search', None)
 
-    if category is None or category == "stockmarket":
+    if search :  # Add this block to handle search queries
+        url = f"https://newsapi.org/v2/everything?q={search}&language=en&sortBy=publishedAt&apiKey={api_key}"
+
+    elif category is None or category == "stockmarket":
         # get the top news
-        url = (
-            "https://newsapi.org/v2/everything?q=stock-market-news&sortBy=publishedAt&apiKey=334c023697204e62b1cb9977f79888b2"
-        )
+        url = f"https://newsapi.org/v2/everything?q=stock-market-news&sortBy=publishedAt&apiKey={api_key}"
     else :
         # get the search query request
         url = (

@@ -1,11 +1,13 @@
+<h1>Market News</h1>
+
 <div class="row mt-5 pt-3">
     <div class="container">
         <!-- Changed method to GET -->
-        <form action="{% url 'stocknews:news_home' %}" class="d-flex justify-content-center" role="search" method="POST">
+        <form action="{% url 'stocknews:news_home' %}" class="d-flex justify-content-center" role="search" method="GET">
             {% csrf_token %}
             <div class="col-lg-7 px-3">
                 <!-- Improved aria-label -->
-                <input class="form-control me-2" type="search" placeholder="Search for News" aria-label="Search for News" name="NewsResult">
+                <input class="form-control me-2" type="search" placeholder="Search for News" aria-label="Search for News" name="search">
             </div>
             <button class="btn btn-outline-success" type="submit">Search</button>
         </form>
