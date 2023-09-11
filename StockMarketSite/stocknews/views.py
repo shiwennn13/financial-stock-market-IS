@@ -42,5 +42,6 @@ def news_home ( request ) :
             "image" : temp_img if i["urlToImage"] is None else i["urlToImage"],
             "publishedat" : i["publishedAt"]
         })
+
     # send the news feed to template in context
     return render(request, 'stocknews/news_home.html', context = context)
