@@ -1,0 +1,28 @@
+{% extends 'StockMarketApp/index.html' %}
+
+{% block content %}
+
+<div>
+    {% include 'stocknews/search_Categories.html' %}
+</div>
+<div class="container" id="articles-container">
+        {% for value in data %}
+        <div class="card mb-3 box" style="max-width: 640px; margin:auto;">
+            <div class="row">
+                <div class="col-md-8">
+                    <div class="card-body">
+                        <h5 class="card-title"><a href="{{value.url}}" target="_blanck">{{value.title}}</a></h5>
+                        <p class="card-text">{{value.description}}</p>
+                        <p class="card-text"><small class="text-muted">{{value.publishedat}}</small></p>
+                    </div>
+                </div>
+
+                <div class="col-md-4 img-box">
+                    <img src="{{value.image}}" class="card-img" alt="..." height="100%">
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    <h1 id="loading">Loading....</h1>
+{% endblock content %}
