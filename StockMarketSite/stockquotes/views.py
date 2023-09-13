@@ -6,33 +6,54 @@ from django.contrib import messages
 
 
 def qhome ( request ) :
-    import requests
-    import json
 
-    processed_api = {}  # Initialize as an empty dictionary
+    ticker_symbol = "NASDAQ:NDX"  # Default ticker symbol
 
     if request.method == 'POST' :
         ticker = request.POST['ticker']  # 'ticker' is the one in the qhome.html <input> name
-        # apikey: AD3P4POXBTNNCS7D
-        api_request = requests.get(
-            "https://www.alphavantage.co/query?function=GLOBAL_QUOTE&symbol=" + ticker + "&apikey"
-                                                                                         "=AD3P4POXBTNNCS7D")
+        ticker_symbol = ticker
 
-        try :
-            api = json.loads(api_request.content)
-            api_data = api.get('Global Quote', {})
-            if not api_data :
-                processed_api = "Error..."
-            else :
-                processed_api = {key.replace(' ', '_').replace('.', '') : value for key, value in api_data.items()}
-        except Exception as e :
-            processed_api = "Error..."
-            # print("Exception occurred:", e)
-            # api_error = True
+    return render(request, 'stockquotes/qhome.html', {'ticker_symbol' : ticker_symbol})
 
-        return render(request, 'stockquotes/qhome.html', {'api' : processed_api})
-    else :
-        return render(request, 'stockquotes/qhome.html', {'ticker' : "Enter a ticker symbol above"})
+    # import requests
+    # import json
+    #
+    # processed_api = {}  # Initialize as an empty dictionary
+    # ticker_symbol = "AAPL"
+    #
+    #
+    # if request.method == 'POST' :
+    #     ticker = request.POST['ticker']  # 'ticker' is the one in the qhome.html <input> name
+    #     # apikey: AD3P4POXBTNNCS7D
+    #     ticker_symbol = ticker
+    #
+    #     # Global Quote API request
+    #     api_request = requests.get(
+    #         "https://www.alphavantage.co/query?function=GLOBAL_QUOTE&symbol=" + ticker + "&apikey"
+    #                                                                                      "=AD3P4POXBTNNCS7D")
+    #     # Overview API request
+    #     overview_api_request = requests.get(
+    #         "https://www.alphavantage.co/query?function=OVERVIEW&symbol=" + ticker + "&apikey=AD3P4POXBTNNCS7D")
+    #
+    #
+    #     try :
+    #         api = json.loads(api_request.content)
+    #         overview_api = json.loads(overview_api_request.content)
+    #         print("Global Quote API:", api)
+    #         print("Overview API:", overview_api)
+    #         api_data = api.get('Global Quote', {})
+    #         if not api_data :
+    #             processed_api = "Error..."
+    #         else :
+    #             processed_api = {key.replace(' ', '_').replace('.', '') : value for key, value in api_data.items()}
+    #     except Exception as e :
+    #         print("Exception:", e)
+    #         processed_api = "Error..."
+    #         overview_api = "Error in Company Overview"
+    #
+    #     return render(request, 'stockquotes/qhome.html', {'api': processed_api, 'overview': overview_api, 'ticker_symbol': ticker_symbol})
+    # else :
+    #     return render(request, 'stockquotes/qhome.html', {'ticker' : "Enter a ticker symbol above"})
 
     # return render(request, 'stockquotes/qhome.html', {'api': processed_api})
 

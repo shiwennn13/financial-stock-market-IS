@@ -13,7 +13,7 @@ def news_home ( request ) :
     search = request.GET.get('search', None)
 
     if search :  # Add this block to handle search queries
-        url = f"https://newsapi.org/v2/everything?q={search}&language=en&sortBy=publishedAt&apiKey={api_key}"
+        url = f"https://newsapi.org/v2/everything?q=+{search}&sortBy=publishedAt&apiKey={api_key}"
 
     elif category is None or category == "stockmarket":
         # get the top news
