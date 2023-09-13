@@ -1,0 +1,31 @@
+<h1>Market News</h1>
+
+<div class="row mt-5 pt-3">
+    <div class="container">
+        <!-- Changed method to GET -->
+        <form action="{% url 'stocknews:news_home' %}" class="d-flex justify-content-center" role="search" method="GET">
+            {% csrf_token %}
+            <div class="col-lg-7 px-3">
+                <!-- Improved aria-label -->
+                <input class="form-control me-2" type="search" placeholder="Search for News" aria-label="Search for News" name="search">
+            </div>
+            <button class="btn btn-outline-success" type="submit">Search</button>
+        </form>
+    </div>
+</div>
+
+
+<!-- Category buttons with even spacing and green color -->
+<div class="row pt-4 justify-content-center">
+    <div class="col-auto">
+        <a href="{% url 'stocknews:news_home' %}?category=technology" class="btn btn-success mx-2" role="button" data-bs-toggle="button">Technology</a>
+    </div>
+    <div class="col-auto">
+        <a href="{% url 'stocknews:news_home' %}?category=business" class="btn btn-success mx-2" role="button" data-bs-toggle="button">Business</a>
+    </div>
+    <div class="col-auto">
+        <a href="{% url 'stocknews:news_home' %}?category=stockmarket" class="btn btn-success mx-2" role="button" data-bs-toggle="button">Market News</a>
+    </div>
+</div>
+<br/>
+<br/>

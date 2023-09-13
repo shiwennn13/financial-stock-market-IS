@@ -6,8 +6,9 @@
     <div class="container">
         <form action="{% url 'stockquotes:qhome'%}" class="d-flex justify-content-center" role="search" method="POST">
             {% csrf_token %}
-            <div class="col-lg-7 px-3" >
-                <input class="form-control me-2" type="search" placeholder="Get Stock Quote" aria-label="Search" name="ticker">
+            <div class="col-lg-7 px-3">
+                <input class="form-control me-2" type="search" placeholder="Get Stock Quote" aria-label="Search"
+                       name="ticker">
             </div>
             <button class="btn btn-outline-success" type="submit">Search</button>
         </form>
@@ -16,29 +17,110 @@
 
 <br/>
 <br/>
-<div class="container">
 
-    {% if ticker %}
-        {{ ticker }}
-    {% endif %}
-
-    {% if api %}
-        {% if api == "Error..." %}
-            There was a problem with your ticker symbol, please try again...
-        {% else %}
-            <h1>{{ api.01_symbol }}</h1><br/>
-            Symbol: {{ api.01_symbol }}<br/>
-            Opening Price: {{ api.02_open }}<br/>
-            Intraday High Price: {{ api.03_high }}<br/>
-            Intraday Low Price: {{ api.04_low }}<br/>
-            Closing Price: {{ api.05_price }}<br/>
-            Trading Volume: {{ api.06_volume }}<br/>
-            Latest Trading Day: {{ api.07_latest_trading_day }}<br/>
-            Previous Closing Price: {{ api.08_previous_close }}<br/>
-            Price Change: {{ api.09_change }}<br/>
-            Price Change Percentage: {{ api.10_change_percent }}<br/>
-        {% endif %}
-    {% endif %}
+<!-- TradingView Symbol Info Widget BEGIN -->
+<div class="tradingview-widget-container">
+  <div class="tradingview-widget-container__widget"></div>
+  <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-symbol-info.js" async>
+  {
+  "symbol": "{{ ticker_symbol }}",
+  "width": "100%",
+  "locale": "en",
+  "colorTheme": "light",
+  "isTransparent": false
+}
+  </script>
 </div>
+<br/><br/>
+<!-- TradingView Symbol Info Widget END -->
+
+<!-- TradingView Widget BEGIN -->
+<div class="tradingview-widget-container">
+  <div id="tradingview_221c7"></div>
+  <script type="text/javascript" src="https://s3.tradingview.com/tv.js"></script>
+  <script type="text/javascript">
+  new TradingView.widget(
+  {
+  "width": "100%",
+  "height": "610",
+  "symbol": "{{ ticker_symbol }}",
+  "interval": "D",
+  "timezone": "Asia/Singapore",
+  "theme": "dark",
+  "style": "1",
+  "locale": "en",
+  "enable_publishing": false,
+  "withdateranges": true,
+  "allow_symbol_change": true,
+  "details": true,
+  "container_id": "tradingview_221c7"
+}
+  );
+  </script>
+</div>
+<!-- TradingView Widget END -->
+<br/><br/>
+
+
+<!-- TradingView Symbol Profile Widget BEGIN -->
+<div class="tradingview-widget-container">
+    <div class="tradingview-widget-container__widget"></div>
+    <script type="text/javascript"
+            src="https://s3.tradingview.com/external-embedding/embed-widget-symbol-profile.js" async>
+        {
+        "width": "100%",
+        "height": "400",
+        "colorTheme": "light",
+        "isTransparent": false,
+        "symbol": "{{ ticker_symbol }}",
+        "locale": "en"
+      }
+    </script>
+</div>
+<br/><br/>
+
+<!-- TradingView Symbol Profile Widget END -->
+
+
+<!-- TradingView Financial Widget BEGIN -->
+<div class="tradingview-widget-container">
+    <div class="tradingview-widget-container__widget"></div>
+    <script type="text/javascript"
+            src="https://s3.tradingview.com/external-embedding/embed-widget-financials.js"
+            async>
+        {
+        "colorTheme": "light",
+        "isTransparent": false,
+        "largeChartUrl": "",
+        "displayMode": "compact",
+        "width": "100%",
+        "height": "500",
+        "symbol": "{{ ticker_symbol }}",
+        "locale": "en"
+        }
+    </script>
+</div>
+<br/><br/>
+<!-- TradingView Financial Widget END -->
+
+<!-- TradingView Timeline Widget BEGIN -->
+<div class="tradingview-widget-container">
+  <div class="tradingview-widget-container__widget"></div>
+  <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-timeline.js" async>
+  {
+  "feedMode": "symbol",
+  "symbol": "{{ ticker_symbol }}",
+  "colorTheme": "light",
+  "isTransparent": false,
+  "displayMode": "compact",
+  "width": "100%",
+  "height": "400",
+  "locale": "en"
+}
+  </script>
+</div>
+<br/><br/>
+<!-- TradingView Timeline Widget END -->
+
 
 {% endblock content %}
