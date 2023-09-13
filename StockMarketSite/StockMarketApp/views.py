@@ -4,14 +4,19 @@ from django.contrib import messages
 from django.http import HttpResponseRedirect
 import requests
 import plotly.graph_objects as go
+from scipy.interpolate import CubicSpline
 from datetime import datetime
 
 from numpy import array
 from sklearn.preprocessing import MinMaxScaler
+from sklearn.metrics import mean_squared_error
 from tensorflow.keras.models import Sequential
 from tensorflow.keras.layers import Dense
 from tensorflow.keras.layers import LSTM
+
 import matplotlib.pyplot as plt
+import tensorflow as tf
+import math
 
 
 # Create your views here.
@@ -28,9 +33,9 @@ def home(request):
             if not stock_name or not time_frame:
                 messages.error(request, 'Symbol or Time frame is empty')
             else:
-                plot_div = call_api(request, time_frame, stock_name)
+                plot_div, plot_div2 = call_api(request, time_frame, stock_name)
 
-            return render(request, "StockMarketApp/candlestick_chart.html", {'plot_div': plot_div})
+            return render(request, "StockMarketApp/candlestick_chart.html", {'plot_div': plot_div, 'plot_div2':plot_div2})
 
         else:
             symbol = ''
@@ -51,8 +56,9 @@ def home(request):
                 symbol = "NKE"
                 time = "1"
 
-            plot_div = call_api(request, time, symbol)
-            return render(request, "StockMarketApp/candlestick_chart.html", {'plot_div': plot_div})
+            plot_div, plot_div2 = call_api(request, time, symbol)
+
+            return render(request, "StockMarketApp/candlestick_chart.html", {'plot_div': plot_div, 'plot_div2':plot_div2 })
     else:
         return render(request, "StockMarketApp/candlestick_chart.html", {})
 
@@ -142,12 +148,12 @@ def call_api(request, time, stock):
                     low.append(low_price)
                     close.append(close_price)
 
-            lstm(close, time)
+            train, test = lstm(close, time)
 
-            return chart(open, high, low, close, dates)
+            return chart(open, high, low, close, dates, train, test)
 
 
-def chart(open, high, low, close, date):
+def chart(open, high, low, close, date, train, test):
     # def chart():
     open_data = open
     high_data = high
@@ -155,24 +161,52 @@ def chart(open, high, low, close, date):
     close_data = close
     dates = date
 
+    train = numpy.array(train)
+    train = train.ravel()
+    train = ', '.join(map(str, train))
+    train = numpy.fromstring(train, sep=',')
+    train = train[::-1]
+
+    print(train)
+
+    test = numpy.array(test)
+    test = test.ravel()
+    test = ', '.join(map(str, test))
+    test = numpy.fromstring(test, sep=',')
+    test = test[::-1]
+
+    print(test)
+
     # Calculate the highest and lowest values in high_data and low_data
     y_max = max(max(high_data), max(low_data))
     y_min = min(min(high_data), min(low_data))
 
-    fig = go.Figure(data=[go.Candlestick(x=dates,
-                                         open=open_data, high=high_data,
-                                         low=low_data, close=close_data)])
+    candle_stick = go.Candlestick(x=dates, open=open_data, high=high_data, low=low_data, close=close_data)
+
+    line = go.Scatter(x=dates, y=close_data, name='Line Chart')
+
+    line_train = go.Scatter(x=dates, y=train, name='Line Chart Train')
+
+    line_test = go.Scatter(x=dates, y=test, name='Line Chart Test')
+
+    line_fig = go.Figure(data=[line, line_train, line_test])
+
+    fig = go.Figure(data=[candle_stick])
 
     # Set the y-axis range to fit the data
     fig.update_yaxes(range=[y_min - 1, y_max + 1])  # Add some padding for clarity
 
-    fig.update_layout(xaxis_rangeslider_visible=False, height=700, yaxis_autorange=True)
+    fig.update_layout(xaxis_rangeslider_visible=False, height=600, width=600, yaxis_autorange=True)
+
+    line_fig.update_layout(height=600, width=600, yaxis_autorange=True)
 
     config = {'displayModeBar': False}
 
     div = fig.to_html(full_html=False, config=config)
 
-    return div
+    div2 = line_fig.to_html(full_html=False, config=config)
+
+    return div, div2
 
 def create_dataset(dataset, time_step = 1):
     dataX, dataY = [], []
@@ -186,6 +220,7 @@ def create_dataset(dataset, time_step = 1):
     return numpy.array(dataX), numpy.array(dataY)
 
 def lstm(close, time):
+    close = close[::-1]
     #scale and standardize data
     scaler = MinMaxScaler(feature_range=(0, 1))
     #numpy.array = reshape from array into 2D array
@@ -202,10 +237,16 @@ def lstm(close, time):
     # use how many days data to predict, train data only have 65 data
     if time == "1":
         time_step = 2
+        epoch = 100
+        batch_size = 128
     elif time == "7":
         time_step = 30
+        epoch = 100
+        batch_size = 64
     else:
-        time_step = 5
+        time_step = 15
+        epoch = 100
+        batch_size = 64
 
     # reshape into X = t , t+1 , t+2 and Y = t+3 meaning use t , t+1 , t+2 to predict t+3 according to time step.
     X_train, Y_train = create_dataset(train_data, time_step)
@@ -213,7 +254,7 @@ def lstm(close, time):
 
     # print(X_train.shape)
     # print(X_train.shape[0])
-    print(X_train.shape[1])
+    # print(X_train.shape[1])
     # print(Y_train.shape)
 
     # print(X_test.shape)
@@ -230,6 +271,52 @@ def lstm(close, time):
     lstm_model.add(LSTM(50))
 
     lstm_model.add(Dense(1))
+
+    lstm_model.compile(loss='mean_squared_error', optimizer='adam')
+
+    #view model summary
+    # print(lstm_model.summary())
+
+    lstm_model.fit(X_train, Y_train, validation_data=(X_test, Y_test), epochs=epoch, batch_size=batch_size, verbose=1)
+
+    #prediction occur and check performance metrics
+    train_predict = lstm_model.predict(X_train)
+    test_predict = lstm_model.predict(X_test)
+
+    #from scaler - tranform back to normal
+    train_predict = scaler.inverse_transform(train_predict)
+    test_predict = scaler.inverse_transform(test_predict)
+
+    #train data RMSE
+    train_data_rmse = math.sqrt(mean_squared_error(Y_train,train_predict))
+
+    #test data RMSE
+    test_data_rmse = math.sqrt(mean_squared_error(Y_test, test_predict))
+
+    # print(train_data_rmse)
+    # print(test_data_rmse)
+    trainPredictPlot = numpy.empty_like(close)
+    trainPredictPlot[:,:] = numpy.nan
+    trainPredictPlot[time_step: len(train_predict)+time_step, :] = train_predict
+
+    testPredictPlot = numpy.empty_like(close)
+    testPredictPlot[:, :] = numpy.nan
+    testPredictPlot[len(train_predict)+(time_step*2)+1:len(close)-1, :] = test_predict
+
+    # plt.plot(scaler.inverse_transform(close))
+    # plt.plot(trainPredictPlot)
+    # plt.plot(testPredictPlot)
+    # plt.show()
+
+    return trainPredictPlot, testPredictPlot
+
+
+
+
+
+
+
+
 
 
 
