@@ -19,9 +19,10 @@ from django.urls import path
 from . import views
 
 urlpatterns = [
-    path('admin/', admin.site.urls),
     path('index', views.index, name='index'),
-    path('home', views.home, name='home'),
-    path('', views.home, name='home'),
+    path('', views.index, name='index'),
+    path('prediction',views.prediction, name='prediction'),
+    path('login/', views.user_login, name='login'),
+    path('base2', views.base2, name='base2'),
     #path('home/<str:symbol>/<str:time>', views.suggest, name='suggest')
 ]

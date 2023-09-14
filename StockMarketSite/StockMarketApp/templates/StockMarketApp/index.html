@@ -1,81 +1,447 @@
 <!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>{% block title %} {% endblock title %}</title>
+{% load static %}
 
-    <!--Framework-->
-    <!-- Boostrap-->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <!-- Font Awesome -->
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet"/>
-    <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap" rel="stylesheet"/>
-    <!-- MDB -->
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/4.0.0/mdb.min.css" rel="stylesheet"/>
+<html lang="en" data-bs-theme="dark">
+    <head>
+        <title>{% block title %}FinStock{% endblock title %}</title>
+        <meta charset="UTF-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css" >
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.0/jquery.min.js"></script>
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+        <!-- Existing CSS and JS links -->
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+        <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet"/>
+        <link href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap" rel="stylesheet"/>
+        <link href="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/4.0.0/mdb.min.css" rel="stylesheet"/>
 
+        <!-- New CSS and JS links -->
+        <link rel="shortcut icon" href="{% static 'images/favicon.png' %}" type="image/x-icon">
+        <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}">
+        <link rel="stylesheet" href="{% static 'css/aos.css' %}">
+        <link rel="stylesheet" href="{% static 'css/all.min.css' %}">
+        <link rel="stylesheet" href="{% static 'css/swiper-bundle.min.css' %}">
+        <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    </head>
 
+  <body>
+    <!-- ===============>> Preloader start here <<================= -->
+    <div class="preloader">
+      <img src="{% static 'images/favicon.png' %}" alt="preloader icon" />
+    </div>
+    <!-- ===============>> Preloader end here <<================= -->
 
-</head>
-    <body>
-            <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-                <a class="navbar-brand" href="#">FinStock</a>
-                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-                <div class="collapse navbar-collapse" id="navbarNav">
-                    <ul class="navbar-nav">
-                        <li class="nav-item active">
-                            <a class="nav-link" href="#">CHART<span class="sr-only">(current)</span></a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="{% url 'stocknews:news_home' %}">NEWS</a>
-                        </li>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="{% url 'stockquotes:qhome' %}">QUOTES</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="{% url 'stockquotes:add_stock' %}">WATCHLIST</a>
-                        </li>
-                    </ul>
+    <!-- ===============>> light&dark switch start here <<================= -->
+    <div class="lightdark-switch d-none">
+      <span class="dark-btn" id="btnSwitch"
+        ><img
+          src="assets/images/icon/moon.svg"
+          alt="light-dark-switchbtn"
+          class="swtich-icon"
+      /></span>
+    </div>
+    <!-- ===============>> light&dark switch start here <<================= -->
 
-                  <!--Comment
-                    <form class="form-inline my-2 my-lg-0">
-                    <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
-                    <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
-                    </form>
-                    -->
-                </div>
-            </nav>
-
-            <div class="container">
-                <br/>
-
-                {% if messages %}
-                    {% for message in messages %}
-                        <div class="alert alert-warning alert-dismissable" role="alert">
-                            <button class="close" data-dismiss="alert">
-                                <small><sup>x</sup></small>
-                            </button>
-                            {{ message }}
-                        </div><br/>
-                    {% endfor %}
-                {% endif %}
-
-                {% block content %}
-
-                {% endblock content %}
+    <!-- ===============>> Header section start here <<================= -->
+    <header class="header-section header-section--style3">
+      <div class="header-bottom">
+        <div class="container">
+          <div class="header-wrapper">
+            <div class="logo">
+              <a href="{% url 'index' %}">
+                <img src="{% static 'images/logo.png' %}" alt="logo" />
+              </a>
             </div>
+            <div class="header-content d-flex align-items-center">
+              <div class="menu-area">
+                  <ul class="menu menu--style2">
+                      <li>
+                          <a href="{% url 'index' %}">HOME</a>
+                      </li>
+                      <li>
+                          <a href="{% url 'prediction' %}">PREDICTION</a>
+                      </li>
+                      <li>
+                          <a href="{% url 'stocknews:news_home' %}">NEWS</a>
+                      </li>
+                      <li>
+                          <a href="{% url 'stockquotes:qhome' %}">QUOTES</a>
+                      </li>
+                      <li>
+                          <a href="{% url 'stockquotes:add_stock' %}">WATCHLIST</a>
+                      </li>
+                  </ul>
+              </div>
+                <div class="header-action">
+                    <div class="menu-area">
+                        <div class="header-btn">
+                            <a class="trk-btn trk-btn--border trk-btn--primary" href="/">
+                                <span>Join Now</span>
+                            </a>
+                        </div>
+
+                  <!-- toggle icons -->
+                  <div class="header-bar d-lg-none header-bar--style2">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </header>
+    <!-- ===============>> Header section end here <<================= -->
+{% if messages %}
+    {% for message in messages %}
+        <div class="alert alert-warning alert-dismissable" role="alert">
+          <button class="close" data-dismiss="alert">
+            <small><sup>x</sup></small>
+          </button>
+          {{ message }}
+        </div><br/>
+    {% endfor %}
+{% endif %}
+
+    {% block content %}
+<section
+      class="banner banner--style2 bg-color-3 bg--cover"
+      style="background-image: url({% static 'images/bg.png' %})"
+    >
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        fill="none"
+        viewBox="0 0 1920 739"
+        class="bg-shape-svg"
+      >
+        <clipPath id="shape-clippath">
+          <path
+            d="M0 0H1920V350.233C1920 483.334 1821.85 596.054 1690.02 614.364L303.352 806.957C143.029 829.224 0 704.687 0 542.825V0Z"
+          />
+        </clipPath>
+      </svg>
+
+      <div class="container">
+        <div class="banner__wrapper banner__wrapper--style2">
+          <div class="row flex-md-row-reverse gx-5">
+            <div class="col-lg-6 col-md-7">
+              <div
+                class="banner__content"
+                data-aos="fade-left"
+                data-aos-duration="1000"
+              >
+                <h1
+                  class="banner__content-heading banner__content-heading--style2"
+                >
+                  Financial Stock Market Information System
+                </h1>
+                <p class="banner__content-moto">
+                  Welcome to the Financial Stock Market Information System! This platform aims to provide comprehensive
+                    insights into the stock market, including real-time stock quotes, market analysis, and the latest news.
+                </p>
+                <div class="btn-group">
+                  <a
+                    href="signin.html"
+                    class="trk-btn trk-btn--primary trk-btn--arrowplay"
+                    >Get Started
+                    <span class="style2">
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="24"
+                        height="24"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                      >
+                        <path
+                          d="M9.74165 7.59173C9.81874 7.51447 9.91032 7.45318 10.0111 7.41137C10.1119 7.36955 10.22 7.34802 10.3291 7.34802C10.4383 7.34802 10.5464 7.36955 10.6472 7.41137C10.748 7.45318 10.8396 7.51447 10.9166 7.59173L14.7416 11.4167C14.8189 11.4938 14.8802 11.5854 14.922 11.6862C14.9638 11.787 14.9854 11.8951 14.9854 12.0042C14.9854 12.1134 14.9638 12.2214 14.922 12.3222C14.8802 12.4231 14.8189 12.5146 14.7416 12.5917L10.9166 16.4167C10.8395 16.4939 10.7479 16.5551 10.6471 16.5968C10.5463 16.6386 10.4383 16.6601 10.3291 16.6601C10.22 16.6601 10.112 16.6386 10.0112 16.5968C9.91039 16.5551 9.8188 16.4939 9.74165 16.4167C9.6645 16.3396 9.6033 16.248 9.56154 16.1472C9.51979 16.0464 9.4983 15.9383 9.4983 15.8292C9.4983 15.7201 9.51979 15.6121 9.56154 15.5113C9.6033 15.4105 9.6645 15.3189 9.74165 15.2417L12.975 12.0001L9.74165 8.76673C9.41665 8.44173 9.42498 7.90839 9.74165 7.59173Z"
+                          fill="#0C263A"
+                        />
+                        <rect
+                          x="-0.75"
+                          y="0.75"
+                          width="22.5"
+                          height="22.5"
+                          rx="11.25"
+                          transform="matrix(-1 0 0 1 22.5 0)"
+                          stroke="black"
+                          stroke-opacity="0.16"
+                          stroke-width="1.5"
+                        />
+                      </svg>
+                    </span>
+                  </a>
+                  <a
+                    href="https://www.youtube.com/watch?v=MHhIzIgFgJo&ab_channel=NoCopyrightFootages"
+                    class="trk-btn trk-btn--outline3"
+                    data-fslightbox
+                  >
+                    <span class="style1"
+                      ><svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="24"
+                        height="24"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                      >
+                        <g clip-path="url(#clip0_1397_814)">
+                          <path
+                            d="M10.5547 7.03647C9.89015 6.59343 9 7.06982 9 7.86852V16.1315C9 16.9302 9.89015 17.4066 10.5547 16.9635L16.7519 12.8321C17.3457 12.4362 17.3457 11.5638 16.7519 11.1679L10.5547 7.03647Z"
+                            stroke="#fff"
+                            stroke-width="1.5"
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                          />
+                        </g>
+                        <rect
+                          x="-0.75"
+                          y="0.75"
+                          width="22.5"
+                          height="22.5"
+                          rx="11.25"
+                          transform="matrix(-1 0 0 1 22.5 0)"
+                          stroke="#fff"
+                          stroke-width="1.5"
+                        />
+                        <defs>
+                          <clipPath id="clip0_1397_814">
+                            <rect width="24" height="24" fill="white" />
+                          </clipPath>
+                        </defs></svg
+                    ></span>
+                    Watch Video
+                  </a>
+                </div>
+              </div>
+            </div>
+            <div class="col-lg-6 col-md-5">
+              <div class="banner__thumb">
+                <img
+                  src="{% static 'images/banner-pic.png' %}"
+                  alt="banner-thumb"
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+    <!-- ===============>> Banner section end here <<================= -->
+
+    <!-- ===============>> feature section start here <<================= -->
+    <section class="feature feature--style2 padding-bottom padding-top feature-bg-color bg--cover"
+    style="background-image:url({% static 'images/feature-pic.png' %})">
+        <div class="section-header section-header--style3 section-header--max57">
+            <h2 class="mb-15 mt-minus-5">Features We have</h2>
+            <p>Hey there! Here are the features we have: user-friendly interface, stock trend prediction, and fast
+                performance.</p>
+        </div>
+        <div class="container">
+            <div class="feature__wrapper">
+                <div class="row g-4 align-items-center">
+                    <div class="col-sm-6 col-lg-3">
+                        <div class="feature__item" data-aos="fade-up" data-aos-duration="800">
+                            <div class="feature__item-inner text-center">
+                                <div class="feature__item-thumb">
+                                    <img src="{% static 'images/feature1.png' %}" alt="feature-item-icon">
+                                </div>
+                                <div class="feature__item-content">
+                                    <h5> Stock Market Analysis </h5>
+                                    <p>Visualize stock price movements with interactive candlestick charts to get insights .</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-6 col-lg-3">
+                        <div class="feature__item" data-aos="fade-up" data-aos-duration="800">
+                            <div class="feature__item-inner text-center">
+                                <div class="feature__item-thumb">
+                                    <img src="{% static 'images/feature2.png' %}" alt="feature-item-icon">
+                                </div>
+                                <div class="feature__item-content">
+                                    <h5> Fundamental Data</h5>
+                                    <p>Evaluate a company's financial health through key financial ratios, income statements, and balance sheets.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-6 col-lg-3">
+                        <div class="feature__item" data-aos="fade-up" data-aos-duration="800">
+                            <div class="feature__item-inner text-center">
+                                <div class="feature__item-thumb">
+                                    <img src="{% static 'images/feature3.png' %}" alt="feature-item-icon">
+                                </div>
+                                <div class="feature__item-content">
+                                    <h5> Stock News </h5>
+                                    <p>Stay updated with real-time, categorized stock market news and search for targeted information.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-6 col-lg-3">
+                        <div class="feature__item" data-aos="fade-up" data-aos-duration="800">
+                            <div class="feature__item-inner text-center">
+                                <div class="feature__item-thumb">
+                                    <img src="{% static 'images/feature4.png' %}" alt="feature-item-icon">
+                                </div>
+                                <div class="feature__item-content">
+                                    <h5>Stock Quotes</h5>
+                                    <p>Access real-time stock quotes and get historical stock price at your fingertips for in-depth analysis .</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="feature__shape">
+            <span class="feature__shape-item feature__shape-item--1"><img src="{% static 'images/feature-icon.png' %}" alt="shape-icon"></span>
+        </div>
+    </section>
+    <!-- ===============>> feature section end here <<================= -->
+
+      <section class="about about--style3 padding-bottom ">
+          <div class="container">
+              <div class="about__wrapper">
+                  <div class="row g-5 mt-100">
+                      <div class="col-md-6">
+                          <div class="about__content" data-aos="fade-right" data-aos-duration="800">
+                              <h2>Our Commitment to Empowering Your Decisions</h2>
+                              <ul>
+                                  <li><span><img src="{% static 'images/check.png' %}" alt="check"></span> Reliable data sourced from trusted platforms.</li>
+                                  <li><span><img src="{% static 'images/check.png' %}" alt="check"></span> Real-time updates to keep you ahead in the market.</li>
+                                  <li><span><img src="{% static 'images/check.png' %}" alt="check"></span> User-friendly interface for effortless navigation and data interpretation.</li>
+                                  <li><span><img src="{% static 'images/check.png' %}" alt="check"></span> Resources and insights to help you understand market trends and financial metrics.</li>
+                              </ul>
+                              <a href="/" class="trk-btn trk-btn--border trk-btn--primary">Join Us Now</a>
+                          </div>
+                      </div>
+                      <div class="col-md-6">
+                          <div class="about__thumb" data-aos="fade-left" data-aos-duration="800">
+                              <div class="about__thumb-inner">
+                                  <div class="about__thumb-image text-center floating-content">
+                                      <img src="{% static 'images/commitment.png' %}" alt="about-image">
+                                  </div>
+                              </div>
+                          </div>
+                      </div>
+                  </div>
+              </div>
+          </div>
+      </section>
 
 
-        <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" ></script>
-        <script src="https://cdn.jsdelivr.net/npm/popper.js@1.12.9/dist/umd/popper.min.js" ></script>
-        <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/js/bootstrap.min.js" ></script>
+    {% endblock content %}
 
-    </body>
+    <footer class="footer brand-1">
+        <div class="container">
+            <div class="footer__wrapper">
+                <div class="footer__top footer__top--style1">
+                    <div class="row gy-5 gx-4">
+                        <div class="col-md-6">
+                            <div class="footer__about">
+                                <a href="{% url 'index' %}" class="footer__about-logo">
+                                    <img src="{% static 'images/logo.png' %}" alt="Logo">
+                                </a>
+                                <p class="footer__about-moto ">Welcome to the Financial Stock Market Information System! This platform aims to provide comprehensive
+                                    insights into the stock market, including real-time stock quotes, market analysis, and the latest news.</p>
+                            </div>
+                        </div>
+                        <div class="col-md-2 col-sm-4 col-6">
+                            <div class="footer__links">
+                                <div class="footer__links-tittle">
+                                    <h6>Quick links</h6>
+                                </div>
+                                <div class="footer__links-content">
+                                    <ul class="footer__linklist">
+                                        <li class="footer__linklist-item"> <a href="{% url 'index' %}">Home</a></li>
+                                        <li class="footer__linklist-item"> <a href="{% url 'stocknews:news_home' %}">News</a></li>
+                                        <li class="footer__linklist-item"> <a
+                                                href="{% url 'stockquotes:qhome' %}">Quotes
+                                        </a></li>
+                                        <li class="footer__linklist-item">
+                                            <a href="{% url 'prediction' %}">Prediction</a></li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-2 col-sm-4">
+                            <div class="footer__links">
+                                <div class="footer__links-tittle">
+                                    <h6>Contact</h6>
+                                </div>
+                                <div class="footer__links-content">
+                                    <ul class="footer__linklist">
+                                        <li class="footer__linklist-item"> <a href="#">Asia Pcific University of Technology and
+                                        Innovation</a></li>
+                                        <li class="footer__linklist-item"> <a href="#">+60192285523</a></li>
+                                        <li class="footer__linklist-item"> <a href="#">tp062634@mail.apu.edu.my</a>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="footer__bottom">
+                    <div class="footer__end">
+                        <div class="footer__end-copyright">
+                            <p class=" mb-0">© 2023 All Rights Reserved By TP062634</p>
+                        </div>
+                        <div>
+                            <ul class="social">
+                                <li class="social__item">
+                                    <a href="#" class="social__link social__link--style22"><i class="fab fa-facebook-f"></i></a>
+                                </li>
+                                <li class="social__item">
+                                    <a href="#" class="social__link social__link--style22 "><i class="fab fa-instagram"></i></a>
+                                </li>
+                                <li class="social__item">
+                                    <a href="#" class="social__link social__link--style22"><i class="fa-brands fa-linkedin-in"></i></a>
+                                </li>
+                                <li class="social__item">
+                                    <a href="#" class="social__link social__link--style22"><i class="fab fa-youtube"></i></a>
+                                </li>
+                                <li class="social__item">
+                                    <a href="#" class="social__link social__link--style22 "><i class="fab fa-twitter"></i></a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="footer__shape">
+            <span class="footer__shape-item footer__shape-item--1"><img src="{% static 'images/footer1.png' %}"
+                                                                        alt="shape icon"></span>
+            <span class="footer__shape-item footer__shape-item--2"> <span></span> </span>
+            <span class="footer__shape-item footer__shape-item--4"><img src="{% static 'images/footer3.png' %}"
+                                                                        alt="shape icon"></span>
+            <span class="footer__shape-item footer__shape-item--5"><img src="{% static 'images/footer2.png' %}"
+                                                                        alt="shape icon"></span>
+        </div>
+    </footer>
+  <!-- ===============>> footer end here <<================= -->
+
+    <!-- ===============>> scrollToTop start here <<================= -->
+  <a href="#" class="scrollToTop scrollToTop--home1"><i class="fa-solid fa-arrow-up-from-bracket"></i></a>
+  <!-- ===============>> scrollToTop ending here <<================= -->
+
+
+
+    <!-- vendor plugins -->
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.12.9/dist/umd/popper.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/js/bootstrap.min.js"></script>
+
+    <script src="{% static 'js/bootstrap.bundle.min.js' %}"></script>
+    <script src="{% static 'js/all.min.js' %}"></script>
+    <script src="{% static 'js/swiper-bundle.min.js' %}"></script>
+    <script src="{% static 'js/aos.js' %}"></script>
+    <script src="{% static 'js/fslightbox.js' %}"></script>
+    <script src="{% static 'js/purecounter_vanilla.js' %}"></script>
+
+    <script src="{% static 'js/custom.js' %}"></script>
+  </body>
 </html>
+

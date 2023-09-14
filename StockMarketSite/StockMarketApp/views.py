@@ -1,5 +1,6 @@
 import numpy
 from django.shortcuts import render, redirect
+from django.contrib.auth import authenticate, login
 from django.contrib import messages
 from django.http import HttpResponseRedirect
 import requests
@@ -20,11 +21,32 @@ import math
 
 
 # Create your views here.
+
+def user_login(request):
+    if request.method == 'POST':
+        username = request.POST['username']
+        password = request.POST['password']
+        user = authenticate(request, username=username, password=password)
+        if user is not None:
+            login(request, user)
+            return redirect('home')  # Redirect to the home page or dashboard
+        else:
+            # Invalid login
+            return render(request, 'StockMarketApp/login.html', {'error': 'Invalid username or password'})
+    return render(request, 'StockMarketApp/login.html')
+
+
 def index(request):
     return render(request, "StockMarketApp/index.html", {})
 
 
 def home(request):
+    return render(request, 'home.html', {})
+
+def base2(request):
+    return render(request, 'StockMarketApp/base2.html', {})
+
+def prediction(request):
     if request.method == 'POST':
         if 'search' in request.POST:
             stock_name = request.POST.get('stock_search')
