@@ -1,8 +1,26 @@
-{% extends 'StockMarketApp/index.html' %}
-
-
+{% extends 'StockMarketApp/base2.html' %}
+{% load static %}
 {% block content %}
-<div class="row mt-5 pt-3">
+
+<section class="page-header bg--cover" style="background-image:url({% static 'images/pageheader.png' %})">
+    <div class="container">
+        <div class="page-header__content" data-aos="fade-right" data-aos-duration="1000">
+            <h2>Market Today</h2>
+            <nav aria-label="breadcrumb" style="--bs-breadcrumb-divider: '/';">
+                <ol class="breadcrumb mb-0">
+                    <li class="breadcrumb-item "><a href="{% url 'index' %}">Home</a></li>
+                    <li aria-current="page" class="breadcrumb-item active">Quote</li>
+                </ol>
+            </nav>
+        </div>
+        <div class="page-header__shape">
+        <span class="page-header__shape-item page-header__shape-item--1">
+            <img alt="shape-icon" src="{% static 'images/pageheader2.png' %}"></span>
+        </div>
+    </div>
+</section>
+
+<div class="row mt-4 pt-3">
     <div class="container">
         <form action="{% url 'stockquotes:qhome'%}" class="d-flex justify-content-center" role="search" method="POST">
             {% csrf_token %}
@@ -19,18 +37,21 @@
 <br/>
 
 <!-- TradingView Symbol Info Widget BEGIN -->
-<div class="tradingview-widget-container">
-  <div class="tradingview-widget-container__widget"></div>
-  <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-symbol-info.js" async>
-  {
-  "symbol": "{{ ticker_symbol }}",
-  "width": "100%",
-  "locale": "en",
-  "colorTheme": "light",
-  "isTransparent": false
-}
-  </script>
+<div class="container">
+    <div class="tradingview-widget-container">
+        <div class="tradingview-widget-container__widget"></div>
+        <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-symbol-info.js" async>
+            {
+                "symbol": "{{ ticker_symbol }}",
+                "width": "100%",
+                "locale": "en",
+                "colorTheme": "light",
+                "isTransparent": true
+            }
+        </script>
+    </div>
 </div>
+
 <br/><br/>
 <!-- TradingView Symbol Info Widget END -->
 
@@ -41,7 +62,7 @@
   <script type="text/javascript">
   new TradingView.widget(
   {
-  "width": "100%",
+  "width": "1200",
   "height": "610",
   "symbol": "{{ ticker_symbol }}",
   "interval": "D",
@@ -61,65 +82,118 @@
 <!-- TradingView Widget END -->
 <br/><br/>
 
+<section class="service padding-top padding-bottom bg-color-7">
+    <div class="section-header section-header--max50">
+        <h2 class="mb-15 mt-minus-5"><span class="style2">Company </span>Profile</h2>
+        <p>This little widget shows a company description along with key categories - sector & industry.</p>
+    </div>
+    <div class="container">
+        <div class="service__wrapper">
+            <div class="row g-4 align-items-center">
 
-<!-- TradingView Symbol Profile Widget BEGIN -->
-<div class="tradingview-widget-container">
-    <div class="tradingview-widget-container__widget"></div>
-    <script type="text/javascript"
-            src="https://s3.tradingview.com/external-embedding/embed-widget-symbol-profile.js" async>
-        {
-        "width": "100%",
-        "height": "400",
-        "colorTheme": "light",
-        "isTransparent": false,
-        "symbol": "{{ ticker_symbol }}",
-        "locale": "en"
-      }
-    </script>
-</div>
-<br/><br/>
+                <div class="service__item service__item--style2" data-aos="fade-up" data-aos-duration="800">
+                    <!-- TradingView Symbol Profile Widget BEGIN -->
+                    <div class="tradingview-widget-container">
+                        <div class="tradingview-widget-container__widget"></div>
+                        <script async
+                                src="https://s3.tradingview.com/external-embedding/embed-widget-symbol-profile.js"
+                                type="text/javascript">
+                            {
+                                "width":"100%",
+                                "height":"400",
+                                "colorTheme":"light",
+                                "isTransparent":false,
+                                "symbol":"{{ ticker_symbol }}",
+                                "locale": "en"
+                            }
+                        </script>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="service__shape">
+      <span class="service__shape-item service__shape-item--2"> <img src="{% static 'images/footer2.png' %}"
+          alt="shape-icon"></span>
+      <span class="service__shape-item service__shape-item--3"> <img src="{% static 'images/footer3.png' %}"
+          alt="shape-icon">
+      </span>
+    </div>
+</section>
+
 
 <!-- TradingView Symbol Profile Widget END -->
 
 
 <!-- TradingView Financial Widget BEGIN -->
-<div class="tradingview-widget-container">
-    <div class="tradingview-widget-container__widget"></div>
-    <script type="text/javascript"
-            src="https://s3.tradingview.com/external-embedding/embed-widget-financials.js"
-            async>
-        {
-        "colorTheme": "light",
-        "isTransparent": false,
-        "largeChartUrl": "",
-        "displayMode": "compact",
-        "width": "100%",
-        "height": "500",
-        "symbol": "{{ ticker_symbol }}",
-        "locale": "en"
-        }
-    </script>
-</div>
-<br/><br/>
+<section class="roadmap roadmap--style1 padding-top  padding-bottom bg-color" id="roadmap">
+    <div class="container">
+        <div class="section-header section-header--max50">
+            <h2 class="mb-15 mt-minus-5">Fundamental <span> Data </span></h2>
+            <p>Evaluate a company's financial health through key financial ratios, income statements, and balance sheets.</p>
+        </div>
+        <div class="row gy-4 gy-md-0 gx-5">
+            <div class="tradingview-widget-container">
+                <div class="tradingview-widget-container__widget"></div>
+                <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-financials.js" async>
+                    {
+                        "colorTheme": "light",
+                        "isTransparent": false,
+                        "largeChartUrl": "",
+                        "displayMode": "regular",
+                        "width": "100%",
+                        "height": "800",
+                        "symbol": "{{ ticker_symbol }}",
+                        "locale": "en"
+                    }
+                </script>
+            </div>
+        </div>
+    </div>
+
+    <div class="roadmap__shape">
+<!--      <span class="roadmap__shape-item roadmap__shape-item&#45;&#45;1"> <span></span> </span>-->
+      <span class="roadmap__shape-item roadmap__shape-item--2"> <img src="{% static 'images/footer2.png'%}"
+                                                                     alt="shape-icon">
+      </span>
+
+    </div>
+
+</section>
 <!-- TradingView Financial Widget END -->
 
 <!-- TradingView Timeline Widget BEGIN -->
-<div class="tradingview-widget-container">
-  <div class="tradingview-widget-container__widget"></div>
-  <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-timeline.js" async>
-  {
-  "feedMode": "symbol",
-  "symbol": "{{ ticker_symbol }}",
-  "colorTheme": "light",
-  "isTransparent": false,
-  "displayMode": "compact",
-  "width": "100%",
-  "height": "400",
-  "locale": "en"
-}
-  </script>
-</div>
-<br/><br/>
+<section class="blog padding-top padding-bottom of-hidden">
+    <div class="container">
+        <div class="section-header d-flex align-items-center justify-content-between">
+            <div class="section-header__content section-header__content--style3">
+                <h2 class="mb-0"> Top <span class="style2">Article </span></h2>
+            </div>
+        </div>
+        <div class="blog__wrapper">
+            <div data-aos="fade-right" data-aos-duration="1000">
+                <div class="tradingview-widget-container">
+                    <div class="tradingview-widget-container__widget"></div>
+                    <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-timeline.js" async>
+                        {
+                            "feedMode": "symbol",
+                            "symbol": "{{ ticker_symbol }}",
+                            "colorTheme": "light",
+                            "isTransparent": true,
+                            "displayMode": "compact",
+                            "width": "100%",
+                            "height": "400",
+                            "locale": "en"
+                        }
+                    </script>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="blog__shape">
+        <span class="blog__shape-item blog__shape-item--1"> <span></span> </span>
+    </div>
+</section>
 <!-- TradingView Timeline Widget END -->
 
 

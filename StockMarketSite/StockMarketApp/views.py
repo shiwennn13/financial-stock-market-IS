@@ -218,9 +218,9 @@ def chart(open, high, low, close, date, train, test):
     # Set the y-axis range to fit the data
     fig.update_yaxes(range=[y_min - 1, y_max + 1])  # Add some padding for clarity
 
-    fig.update_layout(xaxis_rangeslider_visible=False, height=600, width=600, yaxis_autorange=True)
+    fig.update_layout(xaxis_rangeslider_visible=False, height=600, width=1080, yaxis_autorange=True)
 
-    line_fig.update_layout(height=600, width=600, yaxis_autorange=True)
+    line_fig.update_layout(height=600, width=1080, yaxis_autorange=True)
 
     config = {'displayModeBar': False}
 
