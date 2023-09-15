@@ -74,23 +74,37 @@ def add_stock ( request ) :
     else:
         ticker = Stock.objects.all()
         output = []
+        overview_output = []
 
         for ticker_item in ticker:
-
+            # Global Quote API request
             api_request = requests.get(
-                "https://www.alphavantage.co/query?function=GLOBAL_QUOTE&symbol=" + str(ticker_item) + "&apikey"
-                                                                                             "=AD3P4POXBTNNCS7D")
+                "https://www.alphavantage.co/query?function=GLOBAL_QUOTE&symbol=" + str(ticker_item) + "&apikey=AD3P4POXBTNNCS7D")
+            # Overview API request
+            overview_api_request = requests.get(
+                "https://www.alphavantage.co/query?function=OVERVIEW&symbol=" + str(ticker_item) + "&apikey=AD3P4POXBTNNCS7D")
             try :
                 api = json.loads(api_request.content)
+                overview_api = json.loads(overview_api_request.content)
+                print("Global Quote API:", api)
+                print("Overview API:", overview_api)
                 api_data = api.get('Global Quote', {})
                 if not api_data :
                     processed_api = "Error..."
                 else :
                     processed_api = {key.replace(' ', '_').replace('.', '') : value for key, value in api_data.items()}
                     output.append(processed_api)
+                    overview_output.append(overview_api)
             except Exception as e :
+                print("Exception:", e)
                 processed_api = "Error..."
-        return render(request, 'stockquotes/add_stock.html', {'ticker':ticker, 'output':output})
+                overview_api = "Error in Company Overview"
+
+
+            # Zip the two lists together
+        output_and_overview = zip(output, overview_output)
+        return render(request, 'stockquotes/add_stock.html',
+                      {'ticker': ticker, 'output_and_overview': output_and_overview})
 
 def delete(request, stock_id):
     item = Stock.objects.get(pk=stock_id)

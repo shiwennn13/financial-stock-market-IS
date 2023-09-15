@@ -1,61 +1,116 @@
-{% extends 'StockMarketApp/index.html' %}
-
+{% extends 'StockMarketApp/base2.html' %}
+{% load static %}
 {% block content %}
 
-<h1>Stock Portfolio</h1>
+<section class="page-header bg--cover" style="background-image:url({% static 'images/pageheader.png' %})">
+    <div class="container">
+        <div class="page-header__content" data-aos="fade-right" data-aos-duration="1000">
+            <h2>My Watchlist</h2>
+            <nav aria-label="breadcrumb" style="--bs-breadcrumb-divider: '/';">
+                <ol class="breadcrumb mb-0">
+                    <li class="breadcrumb-item "><a href="{% url 'index' %}">Home</a></li>
+                    <li aria-current="page" class="breadcrumb-item active">Watchlist</li>
+                </ol>
+            </nav>
+        </div>
+        <div class="page-header__shape">
+        <span class="page-header__shape-item page-header__shape-item--1">
+            <img alt="shape-icon" src="{% static 'images/pageheader2.png' %}"></span>
+        </div>
+    </div>
+</section>
+
+<div class="row mt-5 pt-3">
+    <div class="container">
+        <form action="{% url 'stockquotes:add_stock'%}" class="d-flex justify-content-center" role="search" method="POST">
+            {% csrf_token %}
+            <div class="col-lg-7 px-3">
+                <input class="form-control me-2" type="search" placeholder="Add Stock to Watchlist" aria-label="Search"
+                       name="ticker">
+            </div>
+            <button class="btn btn-outline-success" type="submit">ADD TICKER</button>
+        </form>
+    </div>
+</div>
 <br/>
 
+<section class="blog padding-top padding-bottom of-hidden">
+    <div class="container">
+<!--        <div class="section-header d-flex align-items-center justify-content-between">-->
+<!--            <div class="section-header__content section-header__content&#45;&#45;style3">-->
+<!--                <h2 class="mb-0"> Top <span class="style2">Article </span></h2>-->
+<!--            </div>-->
+<!--        </div>-->
+        <div class="blog__wrapper">
+            <div data-aos="fade-right" data-aos-duration="1000">
+                <table class="table table-hover" >
+                    <caption>Stock Watchlist</caption>
+                    <thead class="table-dark">
+                        <tr>
+                            <th scope="col">Symbol</th>
+                            <th scope="col">Company</th>
+                            <th scope="col">Last Price</th>
+                            <th scope="col">Change</th>
+                            <th scope="col">%Change</th>
+                            <th scope="col">Currency</th>
+                            <th scope="col">Volume</th>
+                            <th scope="col">Mkt Cap</th>
+                        </tr>
+                    </thead>
+                    <tbody >
+                    {% if ticker %}
+                        {% for list_item, overview_item in output_and_overview %}
+                            <tr>
+                                <th scope="row"> {{ list_item.01_symbol }} </th>
+                                <td>{{ overview_item.Name }}</td>
+                                <td>{{ list_item.05_price }}</td>
+                                <td>{{ list_item.09_change }}</td>
+                                <td>{{ list_item.10_change_percent }}</td>
+                                <td>{{ overview_item.Currency }}</td>
+                                <td>{{ list_item.06_volume }}</td>
+                                <td>{{ overview_item.MarketCapitalization }}</td>
+                            </tr>
+                        {% endfor %}
+                    {% endif %}
 
-<div class="container">
-    <form action="{% url 'stockquotes:add_stock'%}" class="d-flex justify-content-center" role="search" method="POST">
-        {% csrf_token %}
-        <div class="col-lg-7 px-3">
-            <input class="form-control me-2" type="search" placeholder="Add Stock to Watchlist" aria-label="Search"
-                   name="ticker">
+                    </tbody>
+                </table>
+
+                <br/><br/>
+                {% for item in ticker %}
+                    <a href="{% url 'stockquotes:delete' item.id %}" class="btn btn-outline-danger btn-small">Delete {{ item }}</a>
+                {% endfor %}
+            </div>
         </div>
-        <button class="btn btn-outline-success" type="submit">ADD TICKER</button>
-    </form>
-</div>
-<br/><br/>
+    </div>
+    <div class="blog__shape">
+        <span class="blog__shape-item blog__shape-item--1"> <span></span> </span>
+    </div>
+</section>
 
-<table class="table table-hover" >
-    <caption>Stock Watchlist</caption>
-    <thead class="table-dark">
-        <tr>
-            <th scope="col">Symbol</th>
-            <th scope="col">Company</th>
-            <th scope="col">Last Price</th>
-            <th scope="col">Change</th>
-            <th scope="col">%Change</th>
-            <th scope="col">Currency</th>
-            <th scope="col">Volume</th>
-            <th scope="col">Mkt Cap</th>
-            <th scope="col">Remove Stock</th>
-        </tr>
-    </thead>
-    <tbody >
-    {% if ticker %}
-        {% for list_item in output %}
-            <tr>
-                <th scope="row"> {{ list_item.01_symbol }} </th>
-                <td>{{ list_item.02_open }}</td>
-                <td>{{ list_item.05_price }}</td>
-                <td>{{ list_item.09_change }}</td>
-                <td>{{ list_item.10_change_percent }}</td>
-                <td>{{ list_item.07_latest_trading_day }}</td>
-                <td>{{ list_item.06_volume }}</td>
-                <td>{{ list_item.08_previous_close }}</td>
-                <td>Delete</td>
-            </tr>
-        {% endfor %}
-    {% endif %}
 
-    </tbody>
-</table>
 
-<br/><br/>
-{% for item in ticker %}
-	<a href="{% url 'stockquotes:delete' item.id %}" class="btn btn-outline-danger btn-small">Delete {{ item }}</a>
-{% endfor %}
+<style>
 
+.padding-top {
+    padding-top: 30px;
+}
+
+/* Increase table width */
+.table {
+    width: 100%;
+}
+
+/* Increase padding inside table cells */
+.table th, .table td {
+    padding: 20px;
+    font-size: 16px;  /* Increase font size */
+}
+
+/* Optional: Increase table header font size */
+.table thead th {
+    font-size: 16px;
+}
+</style>
 {% endblock content %}
+
