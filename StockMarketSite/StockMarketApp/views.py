@@ -65,6 +65,7 @@ def user_register(request):
     context = {'form': form, 'page': page}
     return render(request,'StockMarketApp/login.html', context)
 
+
 def index(request):
     return render(request, "StockMarketApp/index.html", {})
 

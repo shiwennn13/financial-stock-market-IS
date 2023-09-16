@@ -68,22 +68,27 @@ def add_stock ( request ) :
         form = StockForm (request.POST or None)
 
         if form.is_valid():
-            form.save()
-            messages.success(request,("Stock Has Been Added!"))
+            new_stock = form.save(commit=False)
+            new_stock.user = request.user  # Associate this stock with the logged-in user
+            new_stock.save()
+            messages.success(request, "Stock Has Been Added!")
             return redirect('stockquotes:add_stock')
+        else :
+            messages.error(request, "There was a problem adding the stock. Please try again.")
+            ticker = Stock.objects.filter(user=request.user)  # Filter stocks by the logged-in user
 
     else:
-        ticker = Stock.objects.all()
+        ticker = Stock.objects.filter(user=request.user)
         output = []
         overview_output = []
 
         for ticker_item in ticker:
             # Global Quote API request
             api_request = requests.get(
-                "https://www.alphavantage.co/query?function=GLOBAL_QUOTE&symbol=" + str(ticker_item) + "&apikey=AD3P4POXBTNNCS7D")
+                "https://www.alphavantage.co/query?function=GLOBAL_QUOTE&symbol=" + str(ticker_item) + "&apikey=0BA8N0PMQV2APZGB")
             # Overview API request
             overview_api_request = requests.get(
-                "https://www.alphavantage.co/query?function=OVERVIEW&symbol=" + str(ticker_item) + "&apikey=AD3P4POXBTNNCS7D")
+                "https://www.alphavantage.co/query?function=OVERVIEW&symbol=" + str(ticker_item) + "&apikey=0BA8N0PMQV2APZGB")
             try :
                 api = json.loads(api_request.content)
                 overview_api = json.loads(overview_api_request.content)
