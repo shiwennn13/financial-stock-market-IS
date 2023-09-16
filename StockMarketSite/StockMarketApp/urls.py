@@ -23,6 +23,7 @@ urlpatterns = [
     path('', views.index, name='index'),
     path('prediction',views.prediction, name='prediction'),
     path('login/', views.user_login, name='login'),
-    path('base2', views.base2, name='base2'),
+    path('logout/', views.user_logout, name='logout'),
+    path('register/', views.user_register, name='register'),
     #path('home/<str:symbol>/<str:time>', views.suggest, name='suggest')
 ]

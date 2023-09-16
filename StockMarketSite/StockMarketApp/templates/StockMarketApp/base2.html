@@ -63,14 +63,25 @@
                                 <li>
                                     <a href="{% url 'stockquotes:add_stock' %}">WATCHLIST</a>
                                 </li>
+                                <li>
+                                    {% if request.user.is_authenticated %}
+                                        <a href="/">Hello {{request.user}}</a>
+                                    {% endif %}
+                                </li>
                             </ul>
                         </div>
                         <div class="header-action">
                             <div class="menu-area">
                                 <div class="header-btn">
-                                    <a href="/" class="trk-btn trk-btn--border trk-btn--primary">
-                                        <span>Join Now</span>
-                                    </a>
+                                    {% if user.is_authenticated %}
+                                        <a href="{% url 'logout' %}" class="trk-btn trk-btn--border trk-btn--primary">
+                                            <span>Logout</span>
+                                        </a>
+                                    {% else %}
+                                        <a href="{% url 'login' %}" class="trk-btn trk-btn--border trk-btn--primary">
+                                            <span>Join Now</span>
+                                        </a>
+                                    {% endif %}
                                 </div>
                                 <div class="header-bar d-lg-none header-bar--style1">
                                     <span></span>

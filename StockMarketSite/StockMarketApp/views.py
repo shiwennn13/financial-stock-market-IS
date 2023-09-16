@@ -1,6 +1,9 @@
 import numpy
 from django.shortcuts import render, redirect
-from django.contrib.auth import authenticate, login
+from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth.decorators import login_required
+from .forms import CustomUserCreationForm
+# from django.contrib.auth.forms import UserCreationForm
 from django.contrib import messages
 from django.http import HttpResponseRedirect
 import requests
@@ -23,29 +26,50 @@ import math
 # Create your views here.
 
 def user_login(request):
+    page = 'login'
     if request.method == 'POST':
         username = request.POST['username']
         password = request.POST['password']
         user = authenticate(request, username=username, password=password)
         if user is not None:
             login(request, user)
-            return redirect('home')  # Redirect to the home page or dashboard
+            return redirect('index')  # Redirect to the home page or dashboard
         else:
             # Invalid login
             return render(request, 'StockMarketApp/login.html', {'error': 'Invalid username or password'})
-    return render(request, 'StockMarketApp/login.html')
+    else :
+        # Handle GET request
+        return render(request, 'StockMarketApp/login.html', {'page': page})
 
+def user_logout(request):
+    logout(request)
+    return redirect('login')
+
+def user_register(request):
+    page = 'register'
+    form = CustomUserCreationForm()
+    if request.method == 'POST' :
+        form = CustomUserCreationForm(request.POST)
+        if form.is_valid() :
+            user = form.save(commit=False)
+            user.save()
+            user = authenticate(request, username=user.username, password=request.POST['password1'])
+
+            if user is not None:
+                login(request,user)
+                messages.success(request, 'Your registration was successful. Welcome!')
+                return redirect('index')
+        else :
+            # Handle form errors here, if needed
+            messages.error(request, 'There was a problem with your registration. Please correct the errors below.')
+    context = {'form': form, 'page': page}
+    return render(request,'StockMarketApp/login.html', context)
 
 def index(request):
     return render(request, "StockMarketApp/index.html", {})
 
 
-def home(request):
-    return render(request, 'home.html', {})
-
-def base2(request):
-    return render(request, 'StockMarketApp/base2.html', {})
-
+@login_required(login_url='login')
 def prediction(request):
     if request.method == 'POST':
         if 'search' in request.POST:

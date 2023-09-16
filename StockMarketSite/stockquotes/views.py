@@ -2,9 +2,10 @@ from django.shortcuts import render, redirect
 from .models import Stock
 from .forms import StockForm
 from django.contrib import messages
+from django.contrib.auth.decorators import login_required
 
 
-
+@login_required(login_url='login')
 def qhome ( request ) :
 
     ticker_symbol = "NASDAQ:NDX"  # Default ticker symbol
@@ -58,7 +59,7 @@ def qhome ( request ) :
     # return render(request, 'stockquotes/qhome.html', {'api': processed_api})
 
 
-
+@login_required(login_url='login')
 def add_stock ( request ) :
     import requests
     import json
