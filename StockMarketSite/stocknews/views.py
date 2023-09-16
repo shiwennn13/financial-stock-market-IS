@@ -8,7 +8,6 @@ api_key = '334c023697204e62b1cb9977f79888b2'
 temp_img = "https://images.pexels.com/photos/3225524/pexels-photo-3225524.jpeg?auto=compress&cs=tinysrgb&dpr=2&w=500"
 
 
-@login_required(login_url='login')
 def news_home ( request ) :
     page = request.GET.get('page', 1)
     category = request.GET.get('category', None)

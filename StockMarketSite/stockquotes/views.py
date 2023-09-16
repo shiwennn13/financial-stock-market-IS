@@ -5,7 +5,6 @@ from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 
 
-@login_required(login_url='login')
 def qhome ( request ) :
 
     ticker_symbol = "NASDAQ:NDX"  # Default ticker symbol
