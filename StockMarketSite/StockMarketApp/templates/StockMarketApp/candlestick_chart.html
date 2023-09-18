@@ -1,18 +1,35 @@
-{% extends 'StockMarketApp/index.html' %}
-
-<!-- Title -->
-{% block title %}
-    Stock
-{% endblock title %}
-
+{% extends 'StockMarketApp/base2.html' %}
+{% load static %}
 {% block content%}
+
+<section class="page-header bg--cover" style="background-image:url({% static 'images/pageheader.png' %})">
+    <div class="container">
+        <div class="page-header__content" data-aos="fade-right" data-aos-duration="1000">
+            <h2>Prediction Result</h2>
+            <nav aria-label="breadcrumb" style="--bs-breadcrumb-divider: '/';">
+                <ol class="breadcrumb mb-0">
+                    <li class="breadcrumb-item "><a href="{% url 'index' %}">Home</a></li>
+                    <li aria-current="page" class="breadcrumb-item active">Prediction</li>
+                </ol>
+            </nav>
+        </div>
+        <div class="page-header__shape">
+        <span class="page-header__shape-item page-header__shape-item--1">
+            <img alt="shape-icon" src="{% static 'images/pageheader2.png' %}"></span>
+        </div>
+    </div>
+</section>
+
 
 <div class="container">
     <form  method="POST" >
         {% csrf_token %}
         <div class="row mt-5 pt-3">
             <div class="col-lg-7 px-3" >
-                <input aria-label="Pick a stock" class="form-control w-100" placeholder="Search" type="search" name="stock_search" required>
+                <input aria-label="Pick a stock" class="form-control w-100"
+                       placeholder="Search symbol to display prediction chart"
+                       type="search"
+                       name="stock_search" required>
             </div>
             <div class="col-lg-2 pr-3">
                 <select class="form-select" aria-label="Time frame" name="time_frame">
@@ -31,7 +48,7 @@
     <form method="POST">
         {% csrf_token %}
         <div class="row pt-4">
-            <div class="col-lg-2 px-5">
+            <div class="col-lg-2 px-2">
 <!--                <a href="/home/AAPL/1" class="btn btn-outline-success" role="button" aria-pressed="false">-->
 <!--                    AAPL - Apple Inc.-->
 <!--                </a>-->
@@ -39,7 +56,7 @@
                     AAPL - Apple Inc.
                 </button>
             </div>
-            <div class="col-lg-2 px-5">
+            <div class="col-lg-2 px-2">
 <!--                <a href="/home/TSLA/1" class="btn btn-outline-success" role="button" aria-pressed="false">-->
 <!--                    TSLA - Tesla Inc.-->
 <!--                </a>-->
@@ -47,7 +64,7 @@
                     TSLA - Tesla Inc.
                 </button>
             </div>
-            <div class="col-lg-2 px-5">
+            <div class="col-lg-2 px-2">
 <!--                <a href="/home/SBUX/1" class="btn btn-outline-success" role="button" aria-pressed="false">-->
 <!--                    SBUX - Strbcks.-->
 <!--                </a>-->
@@ -55,7 +72,7 @@
                     SBUX - Strbcks.
                 </button>
             </div>
-            <div class="col-lg-2 px-5">
+            <div class="col-lg-2 px-2">
 <!--                <a href="/home/META/1" class="btn btn-outline-success" role="button" aria-pressed="false">-->
 <!--                    META - Meta Inc.-->
 <!--                </a>-->
@@ -63,7 +80,7 @@
                     META - Meta Inc.
                 </button>
             </div>
-            <div class="col-lg-2 px-5">
+            <div class="col-lg-2 px-2">
 <!--                <a href="/home/NKE/1" class="btn btn-outline-success" role="button" aria-pressed="false">-->
 <!--                    NKE - Nike Inc.-->
 <!--                </a>-->
@@ -73,17 +90,62 @@
             </div>
         </div>
     </form>
-</div>
+</div><br/><br/><br/>
+
 {% if plot_div %}
-<div class="row">
-    <div class="col-lg-6">
-        {{ plot_div|safe }}
+    <section class="roadmap roadmap--style1 padding-top  padding-bottom bg-color" id="roadmap">
+    <div class="container">
+        <div class="section-header section-header--max50">
+            <h2 class="mb-15 mt-minus-5">Normal<span> Candlestick Chart </span></h2>
+            <p>A normal candlestick chart of the company's stock price</p>
+        </div>
+        <div class="row gy-4 gy-md-0 gx-5">
+            {{ plot_div|safe }}
+        </div>
     </div>
-    <div class="col-lg-6">
-        {{ plot_div2|safe }}
+
+    <div class="roadmap__shape">
+      <span class="roadmap__shape-item roadmap__shape-item--1"> <span></span> </span>
+      <span class="roadmap__shape-item roadmap__shape-item--2"> <img src="{% static 'images/footer2.png'%}"
+                                                                     alt="shape-icon">
+      </span>
+
     </div>
-</div>
+
+</section>
+
+    <section class="feature feature--style2 padding-bottom padding-top feature-bg-color bg--cover"
+             style="background-image: url({% static 'images/chartbg.png' %})">
+        <div class="section-header section-header--style3 section-header--max57">
+            <h2 class="mb-15 mt-minus-5">Prediction Chart</h2>
+            <p>The prediction chart below is only for education purpose.
+            </p>
+        </div>
+        <div class="container d-flex justify-content-center align-items-center" style="height: 100%;">
+            <div class="feature__wrapper">
+                <div class="row g-4 align-items-center">
+                    <div class="col-sm-6 col-lg-3">
+                        <div class="feature__item" data-aos="fade-up" data-aos-duration="800">
+
+                                {{ plot_div2|safe }}
+
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+  </section>
 {% endif %}
+
+<!--<div class="row">-->
+<!--    <div class="col-lg-6">-->
+<!--        {{ plot_div|safe }}-->
+<!--    </div>-->
+<!--    <div class="col-lg-6">-->
+<!--        {{ plot_div2|safe }}-->
+<!--    </div>-->
+<!--</div>-->
 
 {% if messages %}
 <div class="row pt-5">

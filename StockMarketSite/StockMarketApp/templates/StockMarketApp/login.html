@@ -1,0 +1,124 @@
+{% extends 'StockMarketApp/base.html' %}
+{% load static %}
+{% block content%}
+
+  <!-- Login Section -->
+  <section class="account padding-top padding-bottom sec-bg-color2">
+    <div class="container">
+      <div class="account__wrapper" data-aos="fade-up" data-aos-duration="800">
+        <div class="account__inner">
+          <div class="row align-items-center">
+            <div class="col-lg-6">
+              <div class="account__thumb">
+                <img src="{% static 'images/loginpic.png' %}" alt="account-image">
+              </div>
+            </div>
+
+            <!-- Display messages here -->
+<!--            {% if messages %}-->
+<!--                {% for message in messages %}-->
+<!--                    <div class="alert alert-{{ message.tags }}">-->
+<!--                        {{ message }}-->
+<!--                    </div>-->
+<!--                {% endfor %}-->
+<!--            {% endif %}-->
+
+            {% if page == 'login' %}
+            <div class="col-lg-6">
+              <div class="account__content account__content--style2">
+                <div class="account__header">
+                  <h2>Log in</h2>
+                  <p class="mb-0">Hey there! Ready to log in? Just enter your credentials and we'll get you to your account in no time. Let's go!</p>
+                </div>
+
+                <!-- Django Login Form -->
+
+                <form action="{% url 'login' %}" method="post" class="account__form needs-validation" novalidate>
+                  {% csrf_token %}
+                  <div class="row g-4">
+                    <div class="col-12">
+                      <div>
+                        <label for="username" class="form-label">Username</label>
+                        <input type="text" name="username" class="form-control" id="username" placeholder="Enter your username" required>
+                      </div>
+                    </div>
+                    <div class="col-12">
+                      <div class="form-pass">
+                        <label for="password" class="form-label">Password</label>
+                        <input type="password" name="password" class="form-control showhide-pass" id="password" placeholder="Password" required>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="account__check">
+                    <div class="account__check-forgot">
+                      <a href="/">Forgot Password?</a>
+                    </div>
+                  </div>
+
+                  <button type="submit" class="trk-btn trk-btn--border trk-btn--primary d-block mt-4">Sign in</button>
+                  <div class="account__switch">
+                    <p>Don't have an account? <a href=" {% url 'register'%}">Sign up</a></p>
+                  </div>
+                </form>
+              </div>
+            </div>
+
+            {% else %}
+            <div class="col-lg-6">
+              <div class="account__content account__content--style2">
+                <div class="account__header">
+                  <h2>Register</h2>
+                </div>
+                <form action="{% url 'register' %}" method="post" class="account__form needs-validation" novalidate>
+                  {% csrf_token %}
+                  <div class="row g-3">
+                    <div class="col-12">
+                      <div>
+                        <label for="username" class="form-label">Username</label>
+                        <input type="text" name="username" class="form-control" id="username" placeholder="Enter your username" required>
+                        {% if form.username.errors %}
+                        <div class="alert alert-danger">
+                          {{ form.username.errors }}
+                        </div>
+                        {% endif %}
+                      </div>
+                    </div>
+                    <div class="col-12">
+                      <div class="form-pass">
+                        <label for="password1" class="form-label">Password</label>
+                        <input type="password" name="password1" class="form-control showhide-pass" id="password1" placeholder="Password" required>
+                        {% if form.password1.errors %}
+                        <div class="alert alert-danger">
+                          {{ form.password1.errors }}
+                        </div>
+                        {% endif %}
+                      </div>
+                    </div>
+                    <div class="col-12">
+                      <div class="form-pass">
+                        <label for="password2" class="form-label">Confirm Password</label>
+                        <input type="password" name="password2" class="form-control showhide-pass" id="password2" placeholder="Re-type password" required>
+                        {% if form.password2.errors %}
+                        <div class="alert alert-danger">
+                          {{ form.password2.errors }}
+                        </div>
+                        {% endif %}
+                      </div>
+                    </div>
+                  </div>
+                  <button type="submit" class="trk-btn trk-btn--border trk-btn--primary d-block mt-4">Sign Up</button>
+                  <div class="account__switch">
+                    <p>Already have an account? <a href="{% url 'login' %}">Login</a></p>
+                  </div>
+                </form>
+              </div>
+            </div>
+            {% endif %}
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+{% endblock content %}

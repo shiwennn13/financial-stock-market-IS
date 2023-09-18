@@ -2,6 +2,7 @@ from django.shortcuts import render
 from django.http import HttpResponse, JsonResponse
 from django.conf import settings
 import requests
+from django.contrib.auth.decorators import login_required
 
 api_key = '334c023697204e62b1cb9977f79888b2'
 temp_img = "https://images.pexels.com/photos/3225524/pexels-photo-3225524.jpeg?auto=compress&cs=tinysrgb&dpr=2&w=500"
@@ -13,11 +14,11 @@ def news_home ( request ) :
     search = request.GET.get('search', None)
 
     if search :  # Add this block to handle search queries
-        url = f"https://newsapi.org/v2/everything?q=+{search}&sortBy=publishedAt&apiKey={api_key}"
+        url = f"https://newsapi.org/v2/everything?q={search}&apiKey={api_key}"
 
     elif category is None or category == "stockmarket":
         # get the top news
-        url = f"https://newsapi.org/v2/everything?q=stock-market-news&sortBy=publishedAt&apiKey={api_key}"
+        url = f"https://newsapi.org/v2/everything?q=stock-market&sortBy=publishedAt&apiKey={api_key}"
     else :
         # get the search query request
         url = (

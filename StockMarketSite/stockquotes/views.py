@@ -2,7 +2,7 @@ from django.shortcuts import render, redirect
 from .models import Stock
 from .forms import StockForm
 from django.contrib import messages
-
+from django.contrib.auth.decorators import login_required
 
 
 def qhome ( request ) :
@@ -58,7 +58,7 @@ def qhome ( request ) :
     # return render(request, 'stockquotes/qhome.html', {'api': processed_api})
 
 
-
+@login_required(login_url='login')
 def add_stock ( request ) :
     import requests
     import json
@@ -67,30 +67,49 @@ def add_stock ( request ) :
         form = StockForm (request.POST or None)
 
         if form.is_valid():
-            form.save()
-            messages.success(request,("Stock Has Been Added!"))
+            new_stock = form.save(commit=False)
+            new_stock.user = request.user  # Associate this stock with the logged-in user
+            new_stock.save()
+            messages.success(request, "Stock Has Been Added!")
             return redirect('stockquotes:add_stock')
+        else :
+            messages.error(request, "There was a problem adding the stock. Please try again.")
+            ticker = Stock.objects.filter(user=request.user)  # Filter stocks by the logged-in user
 
     else:
-        ticker = Stock.objects.all()
+        ticker = Stock.objects.filter(user=request.user)
         output = []
+        overview_output = []
 
         for ticker_item in ticker:
-
+            # Global Quote API request
             api_request = requests.get(
-                "https://www.alphavantage.co/query?function=GLOBAL_QUOTE&symbol=" + str(ticker_item) + "&apikey"
-                                                                                             "=AD3P4POXBTNNCS7D")
+                "https://www.alphavantage.co/query?function=GLOBAL_QUOTE&symbol=" + str(ticker_item) + "&apikey=0BA8N0PMQV2APZGB")
+            # Overview API request
+            overview_api_request = requests.get(
+                "https://www.alphavantage.co/query?function=OVERVIEW&symbol=" + str(ticker_item) + "&apikey=0BA8N0PMQV2APZGB")
             try :
                 api = json.loads(api_request.content)
+                overview_api = json.loads(overview_api_request.content)
+                print("Global Quote API:", api)
+                print("Overview API:", overview_api)
                 api_data = api.get('Global Quote', {})
                 if not api_data :
                     processed_api = "Error..."
                 else :
                     processed_api = {key.replace(' ', '_').replace('.', '') : value for key, value in api_data.items()}
                     output.append(processed_api)
+                    overview_output.append(overview_api)
             except Exception as e :
+                print("Exception:", e)
                 processed_api = "Error..."
-        return render(request, 'stockquotes/add_stock.html', {'ticker':ticker, 'output':output})
+                overview_api = "Error in Company Overview"
+
+
+            # Zip the two lists together
+        output_and_overview = zip(output, overview_output)
+        return render(request, 'stockquotes/add_stock.html',
+                      {'ticker': ticker, 'output_and_overview': output_and_overview})
 
 def delete(request, stock_id):
     item = Stock.objects.get(pk=stock_id)

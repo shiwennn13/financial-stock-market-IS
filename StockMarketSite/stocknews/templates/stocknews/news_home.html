@@ -1,28 +1,63 @@
-{% extends 'StockMarketApp/index.html' %}
-
+{% extends 'StockMarketApp/base2.html' %}
+{% load static %}
 {% block content %}
+
+
+<section class="page-header bg--cover" style="background-image:url({% static 'images/pageheader.png' %})">
+    <div class="container">
+        <div class="page-header__content" data-aos="fade-right" data-aos-duration="1000">
+            <h2>News Flow</h2>
+            <nav aria-label="breadcrumb" style="--bs-breadcrumb-divider: '/';">
+                <ol class="breadcrumb mb-0">
+                    <li class="breadcrumb-item "><a href="{% url 'index' %}">Home</a></li>
+                    <li aria-current="page" class="breadcrumb-item active">News</li>
+                </ol>
+            </nav>
+        </div>
+        <div class="page-header__shape">
+        <span class="page-header__shape-item page-header__shape-item--1">
+            <img alt="shape-icon" src="{% static 'images/pageheader2.png' %}"></span>
+        </div>
+    </div>
+</section>
 
 <div>
     {% include 'stocknews/search_Categories.html' %}
 </div>
 
-<div class="container" id="articles-container">
-    {% for value in data %}
-    <div class="card mb-3 box" style="max-width: 640px; margin:auto;">
-        <div class="row">
-            <div class="col-md-8">
-                <div class="card-body">
-                    <h5 class="card-title"><a href="{{value.url}}" target="_blanck">{{value.title}}</a></h5>
-                    <p class="card-text">{{value.description}}</p>
-                    <p class="card-text"><small class="text-muted">{{value.publishedat}}</small></p>
-                </div>
-            </div>
-            <div class="col-md-4 img-box">
-                <img src="{{value.image}}" class="card-img" alt="..." height="100%">
+<div class="blog padding-top padding-bottom section-bg-color">
+    <div class="container">
+        <div class="blog__wrapper">
+            <div class="row g-4">
+                {% for value in data %}
+                    <div class="col-sm-6 col-lg-4">
+                        <div class="blog__item" data-aos="fade-up" data-aos-duration="800">
+                            <div class="blog__item-inner blog__item-inner--style2">
+                                <div class="blog__thumb">
+                                    <img src="{{value.image}}" alt="blog Images">
+                                </div>
+                                <div class="blog__content">
+                                    <!-- You can add a category or tag here if available -->
+                                    <div class="blog__meta">
+                                        <span class="blog__meta-tag blog__meta-tag--style1"></span>
+                                    </div>
+                                    <h5 class="10 style2">
+                                        <a href="{{value.url}}" target="_blank">{{value.title}}</a>
+                                    </h5>
+                                    <p class="mb-15">{{value.description}}</p>
+                                    <div class="blog__writer">
+                                        <div class="blog__writer-designation">
+                                            <span>{{value.publishedat}}</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
             </div>
         </div>
     </div>
-    {% endfor %}
 </div>
 
 <style>
@@ -45,7 +80,49 @@
 #loading{
     text-align: center;
     display: none;
+
+}
+
+.padding-top {
+    padding-top: 20px;
+}
+
+.blog__thumb {
+    height: 200px;  /* Set a fixed height */
+    overflow: hidden;
+}
+.blog__thumb img {
+    height: 100%;
+    object-fit: cover;
+    width: 100%;
+}
+h5.style2 {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 </style>
 
+
 {% endblock content %}
+
+<!--<div class="container" id="articles-container">-->
+<!--    {% for value in data %}-->
+<!--    <div class="card mb-3 box" style="max-width: 640px; margin:auto;">-->
+<!--        <div class="row">-->
+<!--            <div class="col-md-8">-->
+<!--                <div class="card-body">-->
+<!--                    <h5 class="card-title"><a href="{{value.url}}" target="_blanck">{{value.title}}</a></h5>-->
+<!--                    <p class="card-text">{{value.description}}</p>-->
+<!--                    <p class="card-text"><small class="text-muted">{{value.publishedat}}</small></p>-->
+<!--                </div>-->
+<!--            </div>-->
+<!--            <div class="col-md-4 img-box">-->
+<!--                <img src="{{value.image}}" class="card-img" alt="..." height="100%">-->
+<!--            </div>-->
+<!--        </div>-->
+<!--    </div>-->
+<!--    {% endfor %}-->
+<!--</div>-->
