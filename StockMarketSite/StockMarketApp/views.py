@@ -5,7 +5,7 @@ from django.http import HttpResponseRedirect
 import requests
 import plotly.graph_objects as go
 from scipy.interpolate import CubicSpline
-from datetime import datetime
+from datetime import datetime, timedelta
 
 from numpy import array
 from sklearn.preprocessing import MinMaxScaler
@@ -148,12 +148,12 @@ def call_api(request, time, stock):
                     low.append(low_price)
                     close.append(close_price)
 
-            train, test = lstm(close, time)
+            train, test, prediction = lstm(close, time)
 
-            return chart(open, high, low, close, dates, train, test)
+            return chart(open, high, low, close, dates, train, test, prediction, time)
 
 
-def chart(open, high, low, close, date, train, test):
+def chart(open, high, low, close, date, train, test, prediction, time):
     # def chart():
     open_data = open
     high_data = high
@@ -161,13 +161,17 @@ def chart(open, high, low, close, date, train, test):
     close_data = close
     dates = date
 
+    # print(test)
+    # print(prediction)
+
     train = numpy.array(train)
     train = train.ravel()
     train = ', '.join(map(str, train))
     train = numpy.fromstring(train, sep=',')
     train = train[::-1]
 
-    print(train)
+    # print(train)
+    print(time)
 
     test = numpy.array(test)
     test = test.ravel()
@@ -175,7 +179,32 @@ def chart(open, high, low, close, date, train, test):
     test = numpy.fromstring(test, sep=',')
     test = test[::-1]
 
+    pred = numpy.array(prediction)
+    pred = pred.ravel()
+    pred = ', '.join(map(str, pred))
+    pred = numpy.fromstring(pred, sep=',')
+
+    test_date = dates[0]
+
+    datess = []
+
+    if time == '1':
+        for _ in range(30):
+            datess.append(test_date)
+            test_date += timedelta(days=1)
+    elif time == '7':
+        for _ in range(30):
+            datess.append(test_date)
+            test_date += timedelta(days=7)
+    else:
+        for _ in range(30):
+            datess.append(test_date)
+            test_date += timedelta(days=30)
+
     print(test)
+    print(pred)
+
+    # print(dates)
 
     # Calculate the highest and lowest values in high_data and low_data
     y_max = max(max(high_data), max(low_data))
@@ -189,7 +218,9 @@ def chart(open, high, low, close, date, train, test):
 
     line_test = go.Scatter(x=dates, y=test, name='Line Chart Test')
 
-    line_fig = go.Figure(data=[line, line_train, line_test])
+    line_prediction = go.Scatter(x=datess, y=pred, name='Line Chart Prediction')
+
+    line_fig = go.Figure(data=[line, line_train, line_test, line_prediction])
 
     fig = go.Figure(data=[candle_stick])
 
@@ -252,14 +283,6 @@ def lstm(close, time):
     X_train, Y_train = create_dataset(train_data, time_step)
     X_test, Y_test = create_dataset(test_data, time_step)
 
-    # print(X_train.shape)
-    # print(X_train.shape[0])
-    # print(X_train.shape[1])
-    # print(Y_train.shape)
-
-    # print(X_test.shape)
-    # print(Y_test.shape)
-
     #reshape input to become [samples, time steps, features] - required by LSTM
     X_train = X_train.reshape(X_train.shape[0], X_train.shape[1], 1)
     X_test = X_test.reshape(X_test.shape[0], X_test.shape[1], 1)
@@ -303,12 +326,50 @@ def lstm(close, time):
     testPredictPlot[:, :] = numpy.nan
     testPredictPlot[len(train_predict)+(time_step*2)+1:len(close)-1, :] = test_predict
 
-    # plt.plot(scaler.inverse_transform(close))
-    # plt.plot(trainPredictPlot)
-    # plt.plot(testPredictPlot)
-    # plt.show()
+    x_input_len = len(test_data) * 0.2
+    x_input_lens = len(test_data) - round(x_input_len)
 
-    return trainPredictPlot, testPredictPlot
+    x_input = test_data [x_input_lens:].reshape(1,-1)
+    # print(x_input.shape)
+
+    temp_input = list(x_input)
+    temp_input = temp_input[0].tolist()
+
+    # print(temp_input)
+
+    lst_output = []
+    n_steps = round(x_input_len)
+    # print(n_steps)
+    i = 0
+
+    while (i<30): # 30 days
+        if(len(temp_input)>n_steps):
+            #print temp input
+            x_input=numpy.array(temp_input[1:])
+            print("{} day input {}".format(i,x_input))
+            x_input = x_input.reshape(1,-1)
+            x_input = x_input.reshape((1,n_steps, 1))
+            #print x input
+            yhat = lstm_model.predict(x_input, verbose=0)
+            print("{} day output {}".format(i,yhat))
+            temp_input.extend(yhat[0].tolist())
+            temp_input=temp_input[1:]
+            #print temp input
+            lst_output.extend(yhat.tolist())
+            i=i+1
+        else:
+            x_input = x_input.reshape((1, n_steps,1))
+            yhat = lstm_model.predict(x_input, verbose=0)
+            # print(yhat[0])
+            temp_input.extend(yhat[0].tolist())
+            # print(len(temp_input))
+            lst_output.extend(yhat.tolist())
+            i=i+1
+
+    # print(lst_output)
+    prediction = scaler.inverse_transform(lst_output)
+
+    return trainPredictPlot, testPredictPlot, prediction
 
 
 
