@@ -31,6 +31,13 @@
                   <p class="mb-0">Hey there! Ready to log in? Just enter your credentials and we'll get you to your account in no time. Let's go!</p>
                 </div>
 
+                    <!-- Display Error Message -->
+                {% if error %}
+                  <div class="alert alert-danger">
+                    {{ error }}
+                  </div>
+                {% endif %}
+
                 <!-- Django Login Form -->
 
                 <form action="{% url 'login' %}" method="post" class="account__form needs-validation" novalidate>
@@ -50,11 +57,11 @@
                     </div>
                   </div>
 
-                  <div class="account__check">
-                    <div class="account__check-forgot">
-                      <a href="/">Forgot Password?</a>
-                    </div>
-                  </div>
+<!--                  <div class="account__check">-->
+<!--                    <div class="account__check-forgot">-->
+<!--                      <a href="/">Forgot Password?</a>-->
+<!--                    </div>-->
+<!--                  </div>-->
 
                   <button type="submit" class="trk-btn trk-btn--border trk-btn--primary d-block mt-4">Sign in</button>
                   <div class="account__switch">

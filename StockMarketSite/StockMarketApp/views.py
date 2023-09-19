@@ -25,27 +25,29 @@ import math
 
 # Create your views here.
 
-def user_login(request):
+def user_login ( request ) :
     page = 'login'
-    if request.method == 'POST':
+    if request.method == 'POST' :
         username = request.POST['username']
         password = request.POST['password']
         user = authenticate(request, username=username, password=password)
-        if user is not None:
+        if user is not None :
             login(request, user)
             return redirect('index')  # Redirect to the home page or dashboard
-        else:
+        else :
             # Invalid login
-            return render(request, 'StockMarketApp/login.html', {'error': 'Invalid username or password'})
+            return render(request, 'StockMarketApp/login.html', {'error' : 'Invalid username or password','page': page})
     else :
         # Handle GET request
         return render(request, 'StockMarketApp/login.html', {'page': page})
 
-def user_logout(request):
+
+def user_logout ( request ) :
     logout(request)
     return redirect('login')
 
-def user_register(request):
+
+def user_register ( request ) :
     page = 'register'
     form = CustomUserCreationForm()
     if request.method == 'POST' :
@@ -55,34 +57,36 @@ def user_register(request):
             user.save()
             user = authenticate(request, username=user.username, password=request.POST['password1'])
 
-            if user is not None:
-                login(request,user)
+            if user is not None :
+                login(request, user)
                 messages.success(request, 'Your registration was successful. Welcome!')
                 return redirect('index')
         else :
             # Handle form errors here, if needed
             messages.error(request, 'There was a problem with your registration. Please correct the errors below.')
-    context = {'form': form, 'page': page}
-    return render(request,'StockMarketApp/login.html', context)
+
+    context = {'form' : form, 'page' : page}
+    return render(request, 'StockMarketApp/login.html', context)
 
 
-def index(request):
+def index ( request ) :
     return render(request, "StockMarketApp/index.html", {})
 
 
 @login_required(login_url='login')
-def prediction(request):
-    if request.method == 'POST':
-        if 'search' in request.POST:
+def prediction ( request ) :
+    if request.method == 'POST' :
+        if 'search' in request.POST :
             stock_name = request.POST.get('stock_search')
             time_frame = request.POST.get('time_frame')
 
-            if not stock_name or not time_frame:
+            if not stock_name or not time_frame :
                 messages.error(request, 'Symbol or Time frame is empty')
-            else:
+            else :
                 plot_div, plot_div2 = call_api(request, time_frame, stock_name)
 
-            return render(request, "StockMarketApp/candlestick_chart.html", {'plot_div': plot_div, 'plot_div2':plot_div2})
+            return render(request, "StockMarketApp/candlestick_chart.html",
+                          {'plot_div' : plot_div, 'plot_div2' : plot_div2})
 
         else:
             symbol = ''
