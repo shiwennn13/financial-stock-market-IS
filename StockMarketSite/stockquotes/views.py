@@ -63,21 +63,40 @@ def add_stock ( request ) :
     import requests
     import json
 
+    def validate_stock_symbol ( stock_symbol ) :
+        api_key = "0BA8N0PMQV2APZGB"
+        api_url = f"https://www.alphavantage.co/query?function=GLOBAL_QUOTE&symbol={stock_symbol}&apikey={api_key}"
+        api_request = requests.get(api_url)
+        api_data = json.loads(api_request.content).get('Global Quote', {})
+        return bool(api_data)
+
     if request.method == 'POST' :
         form = StockForm (request.POST or None)
 
         if form.is_valid():
             new_stock = form.save(commit=False)
             new_stock.user = request.user  # Associate this stock with the logged-in user
-            new_stock.save()
-            messages.success(request, "Stock Has Been Added!")
-            return redirect('stockquotes:add_stock')
+            stock_symbol = new_stock.ticker
+
+            # Check if the stock symbol already exists in the user's watchlist
+            existing_stock = Stock.objects.filter(user=request.user, ticker=stock_symbol).first()
+
+            if existing_stock :
+                messages.error(request, "This stock symbol already exists in your watchlist.")
+            else:
+                is_valid_stock = validate_stock_symbol(stock_symbol)
+                if is_valid_stock:
+                    new_stock.save()
+                    messages.success(request, "Stock Has Been Added!")
+                    return redirect('stockquotes:add_stock')
+                else:
+                    messages.error(request, "Invalid stock symbol. Please try again.")
         else :
             messages.error(request, "There was a problem adding the stock. Please try again.")
-            ticker = Stock.objects.filter(user=request.user)  # Filter stocks by the logged-in user
+        return redirect('stockquotes:add_stock')
 
     else:
-        ticker = Stock.objects.filter(user=request.user)
+        ticker = Stock.objects.filter(user=request.user)# Filter stocks by the logged-in user
         output = []
         overview_output = []
 
