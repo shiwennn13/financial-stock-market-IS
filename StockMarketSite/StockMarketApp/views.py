@@ -119,13 +119,13 @@ def call_api(request, time, stock):
     day = ''
     if time == '1':
         day = 'Time Series (Daily)'
-        url = 'https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol=' + stock + '&apikey=C8W51TVO4E4FZ3HZ'
+        url = 'https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol=' + stock + '&apikey=0BA8N0PMQV2APZGB'
     elif time == '7':
         day = 'Weekly Adjusted Time Series'
-        url = 'https://www.alphavantage.co/query?function=TIME_SERIES_WEEKLY_ADJUSTED&symbol=' + stock + '&apikey=C8W51TVO4E4FZ3HZ'
+        url = 'https://www.alphavantage.co/query?function=TIME_SERIES_WEEKLY_ADJUSTED&symbol=' + stock + '&apikey=0BA8N0PMQV2APZGB'
     elif time == '30':
         day = 'Monthly Adjusted Time Series'
-        url = 'https://www.alphavantage.co/query?function=TIME_SERIES_MONTHLY_ADJUSTED&symbol=' + stock + '&apikey=C8W51TVO4E4FZ3HZ'
+        url = 'https://www.alphavantage.co/query?function=TIME_SERIES_MONTHLY_ADJUSTED&symbol=' + stock + '&apikey=0BA8N0PMQV2APZGB'
     else:
         messages.error(request, 'Symbol or Time frame is empty')
 
